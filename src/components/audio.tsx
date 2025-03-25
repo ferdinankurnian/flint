@@ -6,7 +6,7 @@ function Audio() {
 
     const { audioRef, setCurrentTime, setDuration, setIsPlaying } = usePlayer();
     const { tracks, currentTrack, setCurrentTrack } = useTrack();
-    const { lyrics, setActiveLyricIndex, setLyrics } = useLyrics();
+    const { lyrics, setActiveLyricIndex } = useLyrics();
 
     const updateActiveLyric = (time: number) => {
         const endMarker = lyrics.find((lyric) => lyric.endMarker);
@@ -39,26 +39,26 @@ function Audio() {
             setCurrentTrack(firstTrack);
             setIsPlaying(false);
         }
-        setLyrics([]);
+        // setLyrics([]);
         setActiveLyricIndex(-1);
     };
 
     return (
         <audio
-                ref={audioRef}
-                onTimeUpdate={() => {
-                    if (audioRef.current) {
-                        setCurrentTime(audioRef.current.currentTime);
-                        updateActiveLyric(audioRef.current.currentTime);
-                    }
-                }}
-                onLoadedMetadata={() => {
-                    if (audioRef.current) {
-                        setDuration(audioRef.current.duration);
-                    }
-                }}
-                onEnded={handleTrackEnded}
-            />
+            ref={audioRef}
+            onTimeUpdate={() => {
+                if (audioRef.current) {
+                    setCurrentTime(audioRef.current.currentTime);
+                    updateActiveLyric(audioRef.current.currentTime);
+                }
+            }}
+            onLoadedMetadata={() => {
+                if (audioRef.current) {
+                    setDuration(audioRef.current.duration);
+                }
+            }}
+            onEnded={handleTrackEnded}
+        />
     );
 }
 

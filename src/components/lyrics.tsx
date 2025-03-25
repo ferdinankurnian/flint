@@ -2,18 +2,16 @@ import React, { useEffect, useRef } from "react";
 import { DotsThreeVertical } from "@phosphor-icons/react";
 import { useLyrics, Lyric } from "../context/LyricsContext";
 import { useTrack } from "../context/TrackContext";
+import { usePlayer } from "../context/PlayerContext";
 import gsap from "gsap";
+import ScrollToPlugin from 'gsap/ScrollToPlugin';
+gsap.registerPlugin(ScrollToPlugin);
 
 const LyricLine = ({ text, isActive }: { text: string; isActive: boolean }) => {
     return (
         <div
-            className={`text-2xl font-bold py-2 origin-left transform ${isActive ? "opacity-100 scale-100" : "opacity-40 scale-95"
+            className={`lyric-line text-2xl font-bold py-2 origin-left transition duration-300 ease-in-out transform ${isActive ? "opacity-100 scale-100" : "opacity-40 scale-95"
                 }`}
-            style={{
-                transition: isActive
-                    ? "opacity 300ms ease-in-out, transform 300ms ease-in-out"
-                    : "opacity 100ms ease-in-out, transform 100ms ease-in-out",
-            }}
         >
             {text}
         </div>
@@ -23,32 +21,65 @@ const LyricLine = ({ text, isActive }: { text: string; isActive: boolean }) => {
 const InstrumentalIndicator = ({
     isActive,
     duration,
+    isPaused,
 }: {
     isActive: boolean;
     duration: number;
+    isPaused: boolean;
 }) => {
     const dotsRef = useRef<(HTMLDivElement | null)[]>([]);
+    const timelineRef = useRef<GSAPTimeline | null>(null);
 
     useEffect(() => {
-        if (isActive) {
-            dotsRef.current.forEach((dot, index) => {
-                if (dot) {
-                    gsap.to(dot, {
-                        opacity: 1,
-                        duration: duration / 3,
-                        delay: index * (duration / 3),
-                        ease: "power2.out",
-                    });
-                }
-            });
-        } else {
-            dotsRef.current.forEach((dot) => {
-                if (dot) {
-                    gsap.to(dot, { opacity: 0.4, duration: 0.1 });
-                }
-            });
+        timelineRef.current = gsap.timeline({ 
+            paused: true,
+            repeat: -1 // Infinite repeat
+        });
+
+        // Sequential animation
+        if (dotsRef.current[0]) {
+            timelineRef.current
+                .to(dotsRef.current[0], {
+                    opacity: 1,
+                    duration: duration / 3,
+                    ease: "none",
+                })
+                .to(dotsRef.current[1], {
+                    opacity: 1,
+                    duration: duration / 3,
+                    ease: "none",
+                })
+                .to(dotsRef.current[2], {
+                    opacity: 1,
+                    duration: duration / 3,
+                    ease: "none",
+                })
+                .to([dotsRef.current[0], dotsRef.current[1], dotsRef.current[2]], {
+                    opacity: 0.4,
+                    duration: 0.3,
+                    ease: "power2.out",
+                });
         }
-    }, [isActive, duration]);
+
+        return () => {
+            timelineRef.current?.kill();
+        };
+    }, [duration]);
+
+    useEffect(() => {
+        if (isActive && !isPaused) {
+            timelineRef.current?.play();
+        } else {
+            timelineRef.current?.pause();
+            if (!isActive) {
+                dotsRef.current.forEach((dot) => {
+                    if (dot) {
+                        gsap.to(dot, { opacity: 0.4, duration: 0.1 });
+                    }
+                });
+            }
+        }
+    }, [isActive, isPaused]);
 
     return (
         <div className="flex items-center py-2">
@@ -70,9 +101,11 @@ const InstrumentalIndicator = ({
 const LyricsDisplay = ({
     lyrics,
     activeIndex,
+    isPlaying,
 }: {
     lyrics: Lyric[];
     activeIndex: number;
+    isPlaying: boolean;
 }) => {
     const lyricsContainerRef = useRef<HTMLDivElement>(null);
 
@@ -84,9 +117,13 @@ const LyricsDisplay = ({
                 const elementPosition = (activeElement as HTMLElement).offsetTop;
                 const offset = 115; // Adjust this value to change offset (in pixels)
 
-                container.scrollTo({
-                    top: elementPosition - offset,
-                    behavior: "smooth",
+                gsap.to(container, {
+                    duration: 0.5, // Adjust duration (in seconds)
+                    scrollTo: {
+                        y: elementPosition - offset,
+                        autoKill: true
+                    },
+                    ease: "power2.out" // Smooth easing function
                 });
             }
         }
@@ -103,7 +140,7 @@ const LyricsDisplay = ({
     return (
         <div
             ref={lyricsContainerRef}
-            className="px-5 pb-100 text-white space-y-2 w-full h-full overflow-y-auto"
+            className="px-5 pb-100 pt-10 text-white space-y-2 w-full h-full overflow-y-auto scrollbar-hide"
         >
             {lyrics.map((lyric, index) => {
                 if (lyric.inactive) {
@@ -119,6 +156,7 @@ const LyricsDisplay = ({
                             key={index}
                             isActive={index === activeIndex}
                             duration={duration}
+                            isPaused={!isPlaying}
                         />
                     );
                 } else if (!lyric.endMarker) {
@@ -140,6 +178,7 @@ function Lyrics() {
 
     const { lyrics, activeLyricIndex, setLyrics } = useLyrics();
     const { currentTrack } = useTrack();
+    const { isPlaying } = usePlayer();
 
     const handleLrcUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -225,7 +264,7 @@ function Lyrics() {
             </div>
             <div className="text-white space-y-6 h-full overflow-y-auto">
                 {lyrics.length > 0 ? (
-                    <LyricsDisplay lyrics={lyrics} activeIndex={activeLyricIndex} />
+                    <LyricsDisplay lyrics={lyrics} activeIndex={activeLyricIndex} isPlaying={isPlaying} />
                 ) : (
                     <div className="flex flex-col items-center justify-center h-full">
                         <p className="text-2xl font-semibold">No lyrics available</p>
