@@ -6,7 +6,7 @@ import MusicUpload from './tracklist/musicUpload';
 
 function Tracklist() {
 
-    const { tracks } = useTrack();
+    const { tracks, isShuffling, toggleShuffle } = useTrack();
 
     return (
         <div className="w-xs bg-[#00000038] flex flex-col">
@@ -18,7 +18,7 @@ function Tracklist() {
                     </p>
                 </div>
                 <div className="flex space-x-2">
-                    <button className="cursor-pointer text-white hover:bg-[#00000038] rounded-lg p-2">
+                    <button onClick={toggleShuffle} className={`${isShuffling ? "bg-[#00000038]" : ""} cursor-pointer text-white hover:bg-[#00000038] rounded-lg p-2`}>
                         <Shuffle size={24} />
                     </button>
                     <button className="cursor-pointer text-white hover:bg-[#00000038] rounded-lg p-2">

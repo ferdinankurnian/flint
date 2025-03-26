@@ -13,14 +13,18 @@ type TrackContextType = {
   currentTrack: Track | null;
   setCurrentTrack: React.Dispatch<React.SetStateAction<Track | null>>;
   currentIndex: number;
+  isShuffling: boolean;
+  toggleShuffle: () => void;
 };
 
 const TrackContext = createContext<TrackContextType | undefined>(undefined);
 
 export function TrackProvider({ children }: { children: ReactNode }) {
   const [tracks, setTracks] = useState<Track[]>([]);
+  const [originalTracks, setOriginalTracks] = useState<Track[]>([]);
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
   const [currentIndex, setCurrentIndex] = useState<number>(-1);
+  const [isShuffling, setIsShuffling] = useState(false);
 
   useEffect(() => {
     if (!currentTrack) {
@@ -31,8 +35,23 @@ export function TrackProvider({ children }: { children: ReactNode }) {
     setCurrentIndex(index);
   }, [currentTrack, tracks]);
 
+  const toggleShuffle = () => {
+    if (!isShuffling) {
+      setOriginalTracks(tracks);
+      const shuffledTracks = [...tracks];
+      for (let i = shuffledTracks.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledTracks[i], shuffledTracks[j]] = [shuffledTracks[j], shuffledTracks[i]];
+      }
+      setTracks(shuffledTracks);
+    } else {
+      setTracks(originalTracks);
+    }
+    setIsShuffling(!isShuffling);
+  };
+
   return (
-    <TrackContext.Provider value={{ tracks, setTracks, currentTrack, setCurrentTrack, currentIndex }}>
+    <TrackContext.Provider value={{ tracks, setTracks, currentTrack, setCurrentTrack, currentIndex, isShuffling, toggleShuffle }}>
       {children}
     </TrackContext.Provider>
   );

@@ -94,8 +94,10 @@ function Player() {
 
         if (isPlaying) {
             audioRef.current.play().catch((err) => console.error("Playback failed:", err));
+            document.title = `${currentTrack.title} - ${currentTrack.artist} | Flint`;
         } else {
             audioRef.current.pause();
+            document.title = 'Flint';
         }
 
         const handleKeydown = (event: KeyboardEvent) => {
