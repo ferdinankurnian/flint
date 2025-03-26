@@ -9,7 +9,7 @@ function ClearTracks() {
     };
 
     return (
-        <button className="text-white hover:bg-[#00000038] rounded-lg p-2" onClick={clearTracks}>
+        <button className="cursor-pointer text-white hover:bg-[#00000038] rounded-lg p-2" onClick={clearTracks}>
             <Trash size={24} />
         </button>
     );

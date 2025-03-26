@@ -31,7 +31,7 @@ const InstrumentalIndicator = ({
     const timelineRef = useRef<GSAPTimeline | null>(null);
 
     useEffect(() => {
-        timelineRef.current = gsap.timeline({ 
+        timelineRef.current = gsap.timeline({
             paused: true,
             repeat: -1 // Infinite repeat
         });
@@ -238,11 +238,11 @@ function Lyrics() {
     return (
         <div className="w-xs bg-[#00000038] flex flex-col">
             <div className="p-4 flex flex-row justify-between items-center">
-                <div className="flex flex-col">
-                    <h2 className="text-white text-lg font-semibold">
+                <div className="flex flex-col max-w-[225px]">
+                    <h2 className="text-white text-lg font-semibold truncate">
                         {currentTrack?.title || "Lyrics"}
                     </h2>
-                    <p className="text-gray-300 text-sm">
+                    <p className="text-gray-300 text-sm truncate">
                         {currentTrack?.artist || "Unknown"}
                     </p>
                 </div>

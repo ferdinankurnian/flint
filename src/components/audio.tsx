@@ -5,7 +5,7 @@ import { useTrack } from "../context/TrackContext";
 function Audio() {
 
     const { audioRef, setCurrentTime, setDuration, setIsPlaying } = usePlayer();
-    const { tracks, currentTrack, setCurrentTrack } = useTrack();
+    const { tracks, setCurrentTrack, currentIndex } = useTrack();
     const { lyrics, setActiveLyricIndex } = useLyrics();
 
     const updateActiveLyric = (time: number) => {
@@ -26,10 +26,6 @@ function Audio() {
     };
 
     const handleTrackEnded = () => {
-        if (!currentTrack) return;
-        const currentIndex = tracks.findIndex(
-            (track) => track.url === currentTrack.url,
-        );
         if (currentIndex < tracks.length - 1) {
             const nextTrack = tracks[currentIndex + 1];
             setCurrentTrack(nextTrack);

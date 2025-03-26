@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
 export interface Track {
   url: string;
@@ -9,9 +9,10 @@ export interface Track {
 
 type TrackContextType = {
   tracks: Track[];
-  setTracks: React.Dispatch<React.SetStateAction<Track[]>>; // ✅ FIXED
+  setTracks: React.Dispatch<React.SetStateAction<Track[]>>;
   currentTrack: Track | null;
-  setCurrentTrack: React.Dispatch<React.SetStateAction<Track | null>>; // ✅ FIXED
+  setCurrentTrack: React.Dispatch<React.SetStateAction<Track | null>>;
+  currentIndex: number;
 };
 
 const TrackContext = createContext<TrackContextType | undefined>(undefined);
@@ -19,9 +20,19 @@ const TrackContext = createContext<TrackContextType | undefined>(undefined);
 export function TrackProvider({ children }: { children: ReactNode }) {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
+  const [currentIndex, setCurrentIndex] = useState<number>(-1);
+
+  useEffect(() => {
+    if (!currentTrack) {
+      setCurrentIndex(-1);
+      return;
+    }
+    const index = tracks.findIndex((track) => track.url === currentTrack.url);
+    setCurrentIndex(index);
+  }, [currentTrack, tracks]);
 
   return (
-    <TrackContext.Provider value={{ tracks, setTracks, currentTrack, setCurrentTrack }}>
+    <TrackContext.Provider value={{ tracks, setTracks, currentTrack, setCurrentTrack, currentIndex }}>
       {children}
     </TrackContext.Provider>
   );

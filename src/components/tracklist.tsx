@@ -1,4 +1,4 @@
-import { Plus, ArrowsClockwise, Shuffle } from '@phosphor-icons/react';
+import { Plus, Repeat, Shuffle } from '@phosphor-icons/react';
 import { useTrack } from '../context/TrackContext';
 import MusicItem from './tracklist/musicItem';
 import ClearTracks from './tracklist/clearTracks';
@@ -17,12 +17,12 @@ function Tracklist() {
                         {tracks.length} Songs
                     </p>
                 </div>
-                <div className="flex space-x-4">
-                    <button className="text-white hover:bg-[#00000038] rounded-lg p-2">
+                <div className="flex space-x-2">
+                    <button className="cursor-pointer text-white hover:bg-[#00000038] rounded-lg p-2">
                         <Shuffle size={24} />
                     </button>
-                    <button className="text-white hover:bg-[#00000038] rounded-lg p-2">
-                        <ArrowsClockwise size={24} />
+                    <button className="cursor-pointer text-white hover:bg-[#00000038] rounded-lg p-2">
+                        <Repeat size={24} />
                     </button>
                 </div>
             </div>
