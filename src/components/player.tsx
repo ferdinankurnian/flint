@@ -130,7 +130,7 @@ function Player() {
         <div className="grow flex flex-col items-center justify-center">
             <div className="flex flex-col items-center justify-center">
                 <div
-                    className="w-72 h-72 rounded-xl mb-4"
+                    className={`${isPlaying ? "scale-100" : "scale-85"} w-72 h-72 rounded-xl mb-4 transition-transform duration-300 ease-in-out`}
                     style={{
                         backgroundImage: currentTrack?.artworkUrl
                             ? `url(${currentTrack.artworkUrl})`

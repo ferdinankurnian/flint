@@ -35,12 +35,12 @@ function Tracklist() {
             <div className="grow space-y-2 overflow-y-auto px-4">
                 <MusicItem />
             </div>
-            <div className="flex justify-between items-center p-4 py-2">
+            <div className="flex justify-between items-center p-2">
                 <label
                     htmlFor="music-upload"
                     className="rounded-lg hover:bg-[#00000038] p-2 flex flex-row gap-2 font-semibold text-white cursor-pointer"
                 >
-                    <Plus size={24} /> Upload Music
+                    <Plus size={24} /> Add Songs
                 </label>
                 <MusicUpload />
                 <ClearTracks />
