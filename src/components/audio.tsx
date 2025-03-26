@@ -4,8 +4,8 @@ import { useTrack } from "../context/TrackContext";
 
 function Audio() {
 
-    const { audioRef, setCurrentTime, setDuration, setIsPlaying } = usePlayer();
-    const { tracks, setCurrentTrack, currentIndex } = useTrack();
+    const { audioRef, setCurrentTime, setDuration, setIsPlaying, repeatMode } = usePlayer();
+    const { tracks, setCurrentTrack, currentIndex, currentTrack } = useTrack();
     const { lyrics, setActiveLyricIndex } = useLyrics();
 
     const updateActiveLyric = (time: number) => {
@@ -26,16 +26,30 @@ function Audio() {
     };
 
     const handleTrackEnded = () => {
-        if (currentIndex < tracks.length - 1) {
-            const nextTrack = tracks[currentIndex + 1];
-            setCurrentTrack(nextTrack);
+        if (!currentTrack) return;
+    
+        if (repeatMode === "one") {
+            // Ulang lagu yang sama
+            audioRef.current?.play();
+            return;
+        }
+    
+        if (repeatMode === "all" && currentIndex === tracks.length - 1) {
+            // Kalau repeat all dan lagu terakhir, mulai dari awal
+            setCurrentTrack(tracks[0]);
+            setIsPlaying(true);
+        } else if (currentIndex < tracks.length - 1) {
+            // Lanjut ke lagu berikutnya kalau masih ada
+            setCurrentTrack(tracks[currentIndex + 1]);
             setIsPlaying(true);
         } else {
+            // Kalau repeat off, stop playback
             const firstTrack = tracks[0];
             setCurrentTrack(firstTrack);
             setIsPlaying(false);
         }
-        // setLyrics([]);
+    
+        // Reset lyrics-related states
         setActiveLyricIndex(-1);
     };
 

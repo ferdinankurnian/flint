@@ -1,5 +1,6 @@
-import { Plus, Repeat, Shuffle } from '@phosphor-icons/react';
+import { Plus, Repeat, RepeatOnce, Shuffle } from '@phosphor-icons/react';
 import { useTrack } from '../context/TrackContext';
+import { usePlayer } from '../context/PlayerContext';
 import MusicItem from './tracklist/musicItem';
 import ClearTracks from './tracklist/clearTracks';
 import MusicUpload from './tracklist/musicUpload';
@@ -7,6 +8,7 @@ import MusicUpload from './tracklist/musicUpload';
 function Tracklist() {
 
     const { tracks, isShuffling, toggleShuffle } = useTrack();
+    const { toggleRepeat, repeatMode } = usePlayer();
 
     return (
         <div className="w-xs bg-[#00000038] flex flex-col">
@@ -21,8 +23,12 @@ function Tracklist() {
                     <button onClick={toggleShuffle} className={`${isShuffling ? "bg-[#00000038]" : ""} cursor-pointer text-white hover:bg-[#00000038] rounded-lg p-2`}>
                         <Shuffle size={24} />
                     </button>
-                    <button className="cursor-pointer text-white hover:bg-[#00000038] rounded-lg p-2">
+                    <button onClick={toggleRepeat} className={`cursor-pointer text-white hover:bg-[#00000038] rounded-lg p-2 ${repeatMode !== "off" ? "bg-[#00000038]" : ""}`}>
+                    {repeatMode === "one" ? (
+                        <RepeatOnce size={24} />
+                    ) : (
                         <Repeat size={24} />
+                    )}
                     </button>
                 </div>
             </div>
