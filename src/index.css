@@ -50,3 +50,13 @@ input[type="range"]::-ms-thumb {
 input[type="range"]:focus {
   outline: none;
 }
+
+.lyric-line {
+  font-synthesis: weight;
+}
+
+@media (max-height: 630px) {
+  .np-artwork {
+    display: none;
+  }
+}

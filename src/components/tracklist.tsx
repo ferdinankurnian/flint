@@ -21,11 +21,17 @@ function Tracklist() {
                 </div>
                 <div className="flex space-x-2">
                     <button onClick={toggleShuffle} className={`${isShuffling ? "bg-[#00000038]" : ""} cursor-pointer text-white hover:bg-[#00000038] rounded-lg p-2`}>
-                        <Shuffle size={24} />
+                        {isShuffling ? (
+                            <Shuffle size={24} weight='bold' />
+                        ) : (
+                            <Shuffle size={24} />
+                        )}
                     </button>
                     <button onClick={toggleRepeat} className={`cursor-pointer text-white hover:bg-[#00000038] rounded-lg p-2 ${repeatMode !== "off" ? "bg-[#00000038]" : ""}`}>
                     {repeatMode === "one" ? (
-                        <RepeatOnce size={24} />
+                        <RepeatOnce size={24} weight='bold' />
+                    ) : repeatMode === "all" ? (
+                        <Repeat size={24} weight='bold' />
                     ) : (
                         <Repeat size={24} />
                     )}

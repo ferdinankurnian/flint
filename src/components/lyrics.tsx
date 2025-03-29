@@ -10,7 +10,7 @@ gsap.registerPlugin(ScrollToPlugin);
 const LyricLine = ({ text, isActive }: { text: string; isActive: boolean }) => {
     return (
         <div
-            className={`lyric-line text-2xl font-bold py-2 origin-left transition duration-300 ease-in-out transform ${isActive ? "opacity-100 scale-100" : "opacity-40 scale-95"
+            className={`lyric-line text-2xl font-bold py-3 origin-left transition duration-300 ease-in-out transform ${isActive ? "opacity-100 scale-100" : "opacity-40 scale-95"
                 }`}
         >
             {text}
@@ -140,7 +140,7 @@ const LyricsDisplay = ({
     return (
         <div
             ref={lyricsContainerRef}
-            className="px-5 pb-100 pt-10 text-white space-y-2 w-full h-full overflow-y-auto scrollbar-hide"
+            className="px-5 pb-100 pt-10 text-white w-full h-full overflow-y-auto scrollbar-hide"
         >
             {lyrics.map((lyric, index) => {
                 if (lyric.inactive) {
@@ -240,7 +240,7 @@ function Lyrics() {
             <div className="p-4 flex flex-row justify-between items-center">
                 <div className="flex flex-col max-w-[225px]">
                     <h2 className="text-white text-lg font-semibold truncate">
-                        {currentTrack?.title || "Lyrics"}
+                        {currentTrack?.title || "No Track"}
                     </h2>
                     <p className="text-gray-300 text-sm truncate">
                         {currentTrack?.artist || "Unknown"}
@@ -262,7 +262,7 @@ function Lyrics() {
                     </label>
                 </div>
             </div>
-            <div className="text-white space-y-6 h-full overflow-y-auto">
+            <div className="text-white h-full overflow-y-auto">
                 {lyrics.length > 0 ? (
                     <LyricsDisplay lyrics={lyrics} activeIndex={activeLyricIndex} isPlaying={isPlaying} />
                 ) : (

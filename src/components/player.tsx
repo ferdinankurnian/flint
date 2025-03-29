@@ -1,4 +1,4 @@
-import { Rewind, Play, Pause, FastForward } from "@phosphor-icons/react";
+import { Rewind, Play, Pause, FastForward, Playlist, Quotes, SpeakerHigh } from "@phosphor-icons/react";
 import { usePlayer } from "../context/PlayerContext";
 import { useTrack } from "../context/TrackContext";
 import { useLyrics } from "../context/LyricsContext";
@@ -127,80 +127,108 @@ function Player() {
     };
 
     return (
-        <div className="grow flex flex-col items-center justify-center">
-            <div className="flex flex-col items-center justify-center">
-                <div
-                    className={`${isPlaying ? "scale-100" : "scale-85"} w-72 h-72 rounded-xl mb-4 transition-transform duration-300 ease-in-out`}
-                    style={{
-                        backgroundImage: currentTrack?.artworkUrl
-                            ? `url(${currentTrack.artworkUrl})`
-                            : "none",
-                        backgroundSize: "cover",
-                        backgroundColor: currentTrack?.artworkUrl
-                            ? "transparent"
-                            : "#4b5563",
-                    }}
-                ></div>
-                <div className="flex flex-col items-center justify-between w-full">
-                    <div className="flex-1 w-full relative">
-                        <input
-                            type="range"
-                            min={0}
-                            max={duration || 0}
-                            value={currentTime || 0}
-                            onChange={(e) => {
-                                if (audioRef.current) {
-                                    const time = parseFloat(e.target.value);
-                                    audioRef.current.currentTime = time;
-                                    setCurrentTime(time);
-                                }
-                            }}
-                            className="w-full h-1 bg-gray-500 rounded-full appearance-none cursor-pointer"
-                            style={{
-                                background: `linear-gradient(to right, white ${(currentTime / duration) * 100}%, #6b7280 ${(currentTime / duration) * 100}%)`,
-                            }}
-                        />
+        <div className="grow flex flex-col items-center justify-between relative">
+            <div className="grow flex flex-col items-center justify-center">
+                <div className="w-72 flex flex-col items-center justify-center">
+                    <div
+                        className={`${isPlaying ? "scale-100" : "scale-85"} np-artwork w-72 h-72 rounded-xl mb-4 transition-transform duration-300 ease-in-out`}
+                        style={{
+                            backgroundImage: currentTrack?.artworkUrl
+                                ? `url(${currentTrack.artworkUrl})`
+                                : "none",
+                            backgroundSize: "cover",
+                            backgroundColor: currentTrack?.artworkUrl
+                                ? "transparent"
+                                : "#4b5563",
+                        }}
+                    ></div>
+                    <div className="flex flex-col items-center justify-between w-full">
+                        <div className="flex-1 w-full relative">
+                            <input
+                                type="range"
+                                min={0}
+                                max={duration || 0}
+                                value={currentTime || 0}
+                                onChange={(e) => {
+                                    if (audioRef.current) {
+                                        const time = parseFloat(e.target.value);
+                                        audioRef.current.currentTime = time;
+                                        setCurrentTime(time);
+                                    }
+                                }}
+                                className="w-full h-1 bg-gray-500 rounded-full appearance-none cursor-pointer"
+                                style={{
+                                    background: `linear-gradient(to right, white ${(currentTime / duration) * 100}%, #6b7280 ${(currentTime / duration) * 100}%)`,
+                                }}
+                            />
+                        </div>
+                        <div className="flex justify-between w-full my-1">
+                            <span className="text-white text-sm">
+                                {formatTime(currentTime)}
+                            </span>
+                            <span className="text-white text-sm">
+                                {formatTime(duration)}
+                            </span>
+                        </div>
                     </div>
-                    <div className="flex justify-between w-full my-1">
-                        <span className="text-white text-sm">
-                            {formatTime(currentTime)}
-                        </span>
-                        <span className="text-white text-sm">
-                            {formatTime(duration)}
-                        </span>
+                    <div className="flex flex-col items-center gap-1">
+                        <h2 className="np-title text-white text-xl font-bold truncate max-w-72">
+                            {currentTrack?.title || "No Track"}
+                        </h2>
+                        <p className="np-artists text-gray-300 text-sm font-medium truncate max-w-72">
+                            {currentTrack?.artist || "Unknown"}
+                        </p>
+                    </div>
+                    <div className="flex space-x-4 mt-4">
+                        <button
+                            className="text-white cursor-pointer p-2 rounded-lg transition-transform hover:scale-110"
+                            onClick={handlePrevTrack}
+                        >
+                            <Rewind size={38} weight="fill" />
+                        </button>
+                        <button
+                            className="text-white cursor-pointer p-2 rounded-lg transition-transform hover:scale-110"
+                            onClick={handlePlayPause}
+                        >
+                            {isPlaying ? (
+                                <Pause size={38} weight="fill" />
+                            ) : (
+                                <Play size={38} weight="fill" />
+                            )}
+                        </button>
+                        <button
+                            className="text-white cursor-pointer p-2 rounded-lg transition-transform hover:scale-110"
+                            onClick={handleNextTrack}
+                        >
+                            <FastForward size={38} weight="fill" />
+                        </button>
                     </div>
                 </div>
-                <div className="flex flex-col items-center gap-1">
-                    <h2 className="text-white text-xl font-bold truncate max-w-72">
-                        {currentTrack?.title || "No Track"}
-                    </h2>
-                    <p className="text-gray-300 text-sm font-medium truncate max-w-72">
-                        {currentTrack?.artist || "Unknown"}
-                    </p>
+            </div>
+            <div className="flex space-x-4 m-4 absolute bottom-0">
+                <div className="relative">
+                    <button
+                        className="text-[#ffffff8f] cursor-pointer p-2 rounded-lg hover:bg-[#00000038]"
+                        //onClick={ToggleLyrics}
+                    >
+                        <Playlist size={24} weight="regular" />
+                    </button>
+                    <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-[3px] h-[3px] bg-[#ffffff8f] rounded-full"></div>
                 </div>
-                <div className="flex space-x-4 mt-4">
+                <button
+                    className="text-[#ffffff8f] cursor-pointer p-2 rounded-lg hover:bg-[#00000038]"
+                    //onClick={toggleVolume}
+                >
+                        <SpeakerHigh size={24} weight="regular" />
+                </button>
+                <div className="relative">
                     <button
-                        className="text-white cursor-pointer p-2 rounded-lg transition-transform hover:scale-110"
-                        onClick={handlePrevTrack}
+                        className="text-[#ffffff8f] cursor-pointer p-2 rounded-lg hover:bg-[#00000038]"
+                        //onClick={ToggleLyrics}
                     >
-                        <Rewind size={38} weight="fill" />
+                        <Quotes size={24} weight="regular" />
                     </button>
-                    <button
-                        className="text-white cursor-pointer p-2 rounded-lg transition-transform hover:scale-110"
-                        onClick={handlePlayPause}
-                    >
-                        {isPlaying ? (
-                            <Pause size={38} weight="fill" />
-                        ) : (
-                            <Play size={38} weight="fill" />
-                        )}
-                    </button>
-                    <button
-                        className="text-white cursor-pointer p-2 rounded-lg transition-transform hover:scale-110"
-                        onClick={handleNextTrack}
-                    >
-                        <FastForward size={38} weight="fill" />
-                    </button>
+                    <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-[3px] h-[3px] bg-[#ffffff8f] rounded-full"></div>
                 </div>
             </div>
         </div>
