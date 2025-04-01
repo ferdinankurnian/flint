@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from "react";
-import { DotsThreeVertical } from "@phosphor-icons/react";
 import { useLyrics, Lyric } from "../context/LyricsContext";
 import { useTrack } from "../context/TrackContext";
 import { usePlayer } from "../context/PlayerContext";
+import { Dropdown, DropdownItem, DropdownSeparator } from './dropdown';
+import { useViewSection } from "../context/ViewSectionContext";
 import gsap from "gsap";
 import ScrollToPlugin from 'gsap/ScrollToPlugin';
 gsap.registerPlugin(ScrollToPlugin);
@@ -10,7 +11,7 @@ gsap.registerPlugin(ScrollToPlugin);
 const LyricLine = ({ text, isActive }: { text: string; isActive: boolean }) => {
     return (
         <div
-            className={`lyric-line text-2xl font-bold py-3 origin-left transition duration-300 ease-in-out transform ${isActive ? "opacity-100 scale-100" : "opacity-40 scale-95"
+            className={`lyric-line text-2xl font-bold py-3 origin-left transition duration-300 ease-in-out transform ${isActive ? "opacity-100 scale-100" : "opacity-30 scale-95"
                 }`}
         >
             {text}
@@ -55,7 +56,7 @@ const InstrumentalIndicator = ({
                     ease: "none",
                 })
                 .to([dotsRef.current[0], dotsRef.current[1], dotsRef.current[2]], {
-                    opacity: 0.4,
+                    opacity: 0.3,
                     duration: 0.3,
                     ease: "power2.out",
                 });
@@ -74,7 +75,7 @@ const InstrumentalIndicator = ({
             if (!isActive) {
                 dotsRef.current.forEach((dot) => {
                     if (dot) {
-                        gsap.to(dot, { opacity: 0.4, duration: 0.1 });
+                        gsap.to(dot, { opacity: 0.3, duration: 0.1 });
                     }
                 });
             }
@@ -87,7 +88,7 @@ const InstrumentalIndicator = ({
                 {[0, 1, 2].map((i) => (
                     <div
                         key={i}
-                        className={`w-3 h-3 bg-white rounded-full opacity-40`}
+                        className={`w-3 h-3 bg-white rounded-full opacity-30`}
                         ref={(el) => {
                             if (el) dotsRef.current[i] = el;
                         }}
@@ -145,7 +146,7 @@ const LyricsDisplay = ({
             {lyrics.map((lyric, index) => {
                 if (lyric.inactive) {
                     return (
-                        <div key={index} className="opacity-40 text-2xl font-bold py-2">
+                        <div key={index} className="opacity-40 text-2xl font-bold py-3">
                             {lyric.text}
                         </div>
                     );
@@ -179,6 +180,7 @@ function Lyrics() {
     const { lyrics, activeLyricIndex, setLyrics } = useLyrics();
     const { currentTrack } = useTrack();
     const { isPlaying } = usePlayer();
+    const { isLyricsVisible } = useViewSection();
 
     const handleLrcUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -235,8 +237,22 @@ function Lyrics() {
         }
     };
 
+    const handleProfileClick = () => {
+        alert('Profile clicked!');
+    };
+
+    const handleSettingsClick = () => {
+        alert('Settings clicked!');
+    };
+
+    const handleLogoutClick = () => {
+        alert('Logout clicked!');
+    };
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
     return (
-        <div className="w-xs bg-[#00000038] flex flex-col">
+        <div className={`lyrics-view ${isLyricsVisible ? "block" : "hidden"} w-xs bg-[#00000038] flex flex-col`}>
             <div className="p-4 flex flex-row justify-between items-center">
                 <div className="flex flex-col max-w-[225px]">
                     <h2 className="text-white text-lg font-semibold truncate">
@@ -247,7 +263,7 @@ function Lyrics() {
                     </p>
                 </div>
                 <div className="flex space-x-4">
-                    <input
+                    {/* <input
                         type="file"
                         accept=".lrc"
                         onChange={handleLrcUpload}
@@ -259,7 +275,23 @@ function Lyrics() {
                         className="text-white hover:bg-[#00000038] rounded-lg p-2 cursor-pointer"
                     >
                         <DotsThreeVertical size={24} />
-                    </label>
+                    </label> */}
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        accept=".lrc"
+                        onChange={handleLrcUpload}
+                        className="hidden"
+                        id="lrcUpload"
+                    />
+                    <Dropdown>
+                        <DropdownItem onClick={handleProfileClick}>Song Info</DropdownItem>
+                        <DropdownItem onClick={() => fileInputRef.current?.click()}>Upload Lyrics (.lrc)</DropdownItem>
+                        <DropdownItem onClick={handleProfileClick}>Clear Lyrics (.lrc)</DropdownItem>
+                        <DropdownSeparator />
+                        <DropdownItem onClick={handleSettingsClick}>Settings</DropdownItem>
+                        <DropdownItem onClick={handleLogoutClick}>Logout</DropdownItem>
+                    </Dropdown>
                 </div>
             </div>
             <div className="text-white h-full overflow-y-auto">

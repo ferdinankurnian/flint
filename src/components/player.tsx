@@ -3,12 +3,14 @@ import { usePlayer } from "../context/PlayerContext";
 import { useTrack } from "../context/TrackContext";
 import { useLyrics } from "../context/LyricsContext";
 import { useEffect } from "react";
+import { useViewSection } from "../context/ViewSectionContext";
 
 function Player() {
 
     const { isPlaying, currentTime, duration, audioRef, setIsPlaying, setCurrentTime } = usePlayer();
     const { tracks, currentTrack, currentIndex, setCurrentTrack } = useTrack();
     const { setActiveLyricIndex } = useLyrics();
+    const { toggleTracklist, toggleLyrics, isLyricsVisible, isTracklistVisible } = useViewSection();
     
     const handlePlayPause = () => {
         if (isPlaying) {
@@ -73,6 +75,7 @@ function Player() {
             navigator.mediaSession.metadata = new MediaMetadata({
                 title: currentTrack.title,
                 artist: currentTrack.artist,
+                album: currentTrack.album,
                 artwork: currentTrack.artworkUrl ? [
                     // Provide multiple sizes for better compatibility
                     { src: currentTrack.artworkUrl, sizes: "96x96", type: "image/jpeg" },
@@ -127,7 +130,7 @@ function Player() {
     };
 
     return (
-        <div className="grow flex flex-col items-center justify-between relative">
+        <div className="player-view grow flex flex-col items-center justify-between relative">
             <div className="grow flex flex-col items-center justify-center">
                 <div className="w-72 flex flex-col items-center justify-center">
                     <div
@@ -175,7 +178,7 @@ function Player() {
                         <h2 className="np-title text-white text-xl font-bold truncate max-w-72">
                             {currentTrack?.title || "No Track"}
                         </h2>
-                        <p className="np-artists text-gray-300 text-sm font-medium truncate max-w-72">
+                        <p className="np-artists text-gray-300 text-sm font-normal truncate max-w-72">
                             {currentTrack?.artist || "Unknown"}
                         </p>
                     </div>
@@ -208,27 +211,27 @@ function Player() {
             <div className="flex space-x-4 m-4 absolute bottom-0">
                 <div className="relative">
                     <button
-                        className="text-[#ffffff8f] cursor-pointer p-2 rounded-lg hover:bg-[#00000038]"
-                        //onClick={ToggleLyrics}
+                        className="text-[#ffffff8f] cursor-pointer p-2 rounded-lg hover:text-[#fff] hover:bg-[#00000038]"
+                        onClick={toggleTracklist}
                     >
                         <Playlist size={24} weight="regular" />
                     </button>
-                    <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-[3px] h-[3px] bg-[#ffffff8f] rounded-full"></div>
+                    <div className={`absolute ${isTracklistVisible ? "" : "hidden"} bottom-1 left-1/2 transform -translate-x-1/2 w-[3px] h-[3px] bg-[#ffffff8f] rounded-full`}></div>
                 </div>
                 <button
-                    className="text-[#ffffff8f] cursor-pointer p-2 rounded-lg hover:bg-[#00000038]"
+                    className="text-[#ffffff8f] cursor-pointer p-2 rounded-lg hover:text-[#fff] hover:bg-[#00000038]"
                     //onClick={toggleVolume}
                 >
                         <SpeakerHigh size={24} weight="regular" />
                 </button>
                 <div className="relative">
                     <button
-                        className="text-[#ffffff8f] cursor-pointer p-2 rounded-lg hover:bg-[#00000038]"
-                        //onClick={ToggleLyrics}
+                        className="text-[#ffffff8f] cursor-pointer p-2 rounded-lg hover:text-[#fff] hover:bg-[#00000038]"
+                        onClick={toggleLyrics}
                     >
                         <Quotes size={24} weight="regular" />
                     </button>
-                    <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-[3px] h-[3px] bg-[#ffffff8f] rounded-full"></div>
+                    <div className={`absolute ${isLyricsVisible ? "" : "hidden"} bottom-1 left-1/2 transform -translate-x-1/2 w-[3px] h-[3px] bg-[#ffffff8f] rounded-full`}></div>
                 </div>
             </div>
         </div>

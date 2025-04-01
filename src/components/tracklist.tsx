@@ -1,6 +1,7 @@
 import { Plus, Repeat, RepeatOnce, Shuffle } from '@phosphor-icons/react';
 import { useTrack } from '../context/TrackContext';
 import { usePlayer } from '../context/PlayerContext';
+import { useViewSection } from '../context/ViewSectionContext';
 import MusicItem from './tracklist/musicItem';
 import ClearTracks from './tracklist/clearTracks';
 import MusicUpload from './tracklist/musicUpload';
@@ -9,9 +10,10 @@ function Tracklist() {
 
     const { tracks, isShuffling, toggleShuffle } = useTrack();
     const { toggleRepeat, repeatMode } = usePlayer();
+    const { isTracklistVisible } = useViewSection();
 
     return (
-        <div className="w-xs bg-[#00000038] flex flex-col">
+        <div className={`tracklist-view ${isTracklistVisible ? "block" : "hidden"} w-xs bg-[#00000038] flex flex-col`}>
             <div className="flex justify-between items-center p-4">
                 <div className="flex flex-col">
                     <h2 className="text-white text-sm">Tracks</h2>

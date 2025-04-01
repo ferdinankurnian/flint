@@ -13,12 +13,16 @@ function createWindow () {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: false,
       contextIsolation: true,
+      icon: path.join(__dirname, "../public/flint.png"),
     },
+  });
+
+  win.webContents.on("did-finish-load", () => {
+    win.webContents.setZoomFactor(0.9); // Set zoom ke 90%
   });
 
   if (process.env.NODE_ENV === "development") {
     win.loadURL("http://localhost:5173"); // Vite dev server
-    win.webContents.openDevTools();
   } else {
     win.loadFile(path.join(__dirname, "../dist/index.html")); // Production build
   }

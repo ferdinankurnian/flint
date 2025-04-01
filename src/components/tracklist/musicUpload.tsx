@@ -15,13 +15,14 @@ function MusicUpload() {
                     const url = URL.createObjectURL(file);
                     const title = metadata.common.title || "Unknown Title";
                     const artist = metadata.common.artist || "Unknown Artist";
+                    const album = metadata.common.album || "Unknown Album";
                     const picture = metadata.common.picture?.[0];
                     let artworkUrl = "";
                     if (picture) {
                         const blob = new Blob([picture.data], { type: picture.format });
                         artworkUrl = URL.createObjectURL(blob);
                     }
-                    newTracks.push({ url, title, artist, artworkUrl });
+                    newTracks.push({ url, title, artist, album, artworkUrl });
                 } catch (err) {
                     console.error("Failed to parse metadata for", file.name, err);
                 }

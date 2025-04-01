@@ -60,3 +60,25 @@ input[type="range"]:focus {
     display: none;
   }
 }
+
+/* Works on Chrome, Edge, and Safari */
+::-webkit-scrollbar {
+  width: 10px;               /* slightly wider to accommodate padding */
+  height: 10px;              /* height for horizontal scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;             /* adds space at top and bottom of track */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(155, 155, 155, 0.5);  /* color of the scroll thumb */
+  border-radius: 20px;       /* roundness of the scroll thumb */
+  border: 3px solid transparent;              /* creates padding effect */
+  background-clip: content-box;               /* ensures background only applies to content area */
+  transition: background-color 0.3s ease;     /* smooth transition for hover effect */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(155, 155, 155, 0.8);  /* darker on hover */
+}
