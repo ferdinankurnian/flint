@@ -7,6 +7,7 @@ import { useViewSection } from "../context/ViewSectionContext";
 import gsap from "gsap";
 import ScrollToPlugin from 'gsap/ScrollToPlugin';
 gsap.registerPlugin(ScrollToPlugin);
+import SongInfoModal from "./tracklist/songInfo";
 
 const LyricLine = ({ text, isActive }: { text: string; isActive: boolean }) => {
     return (
@@ -30,44 +31,66 @@ const InstrumentalIndicator = ({
 }) => {
     const dotsRef = useRef<(HTMLDivElement | null)[]>([]);
     const timelineRef = useRef<GSAPTimeline | null>(null);
+    const containerRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         timelineRef.current = gsap.timeline({
             paused: true,
             repeat: -1 // Infinite repeat
         });
-
+    
         // Sequential animation
         if (dotsRef.current[0]) {
+            const fadeDuration = 0.3; // Fixed fade duration
+            const activeDuration = duration * 0.8;
+            const individualDuration = activeDuration / 3;
+            const stayDuration = Math.max(0, duration - activeDuration - fadeDuration);
+    
             timelineRef.current
                 .to(dotsRef.current[0], {
                     opacity: 1,
-                    duration: duration / 3,
+                    duration: individualDuration,
                     ease: "none",
                 })
                 .to(dotsRef.current[1], {
                     opacity: 1,
-                    duration: duration / 3,
+                    duration: individualDuration,
                     ease: "none",
                 })
                 .to(dotsRef.current[2], {
                     opacity: 1,
-                    duration: duration / 3,
+                    duration: individualDuration,
                     ease: "none",
                 })
                 .to([dotsRef.current[0], dotsRef.current[1], dotsRef.current[2]], {
+                    opacity: 1,
+                    duration: stayDuration,
+                    ease: "none",
+                }, "+=0")
+                .to([dotsRef.current[0], dotsRef.current[1], dotsRef.current[2]], {
                     opacity: 0.3,
-                    duration: 0.3,
+                    duration: fadeDuration,
                     ease: "power2.out",
-                });
+                }, "+=0");
         }
-
+    
         return () => {
             timelineRef.current?.kill();
         };
     }, [duration]);
 
     useEffect(() => {
+        if (containerRef.current) {
+            gsap.to(containerRef.current, {
+                duration: 0.5,
+                scale: isActive ? 1 : 0,
+                autoAlpha: isActive ? 1 : 0,
+                paddingTop: isActive ? '0.5rem' : 0,
+                paddingBottom: isActive ? '0.5rem' : 0,
+                ease: "power2.out",
+                transformOrigin: "left center"
+            });
+        }
         if (isActive && !isPaused) {
             timelineRef.current?.play();
         } else {
@@ -83,7 +106,10 @@ const InstrumentalIndicator = ({
     }, [isActive, isPaused]);
 
     return (
-        <div className="flex items-center py-2">
+        <div
+            ref={containerRef}
+            className={`instrumental-dots flex items-center overflow-hidden ${!isActive ? 'py-0' : ''}`}
+        >
             <div className="flex space-x-[7px]">
                 {[0, 1, 2].map((i) => (
                     <div
@@ -116,7 +142,12 @@ const LyricsDisplay = ({
             if (activeElement) {
                 const container = lyricsContainerRef.current;
                 const elementPosition = (activeElement as HTMLElement).offsetTop;
-                const offset = 115; // Adjust this value to change offset (in pixels)
+                let offset = 115; // Adjust this value to change offset (in pixels)
+
+                // Check if the previous element is an instrumental indicator
+                if (activeIndex > 0 && lyrics[activeIndex - 1].instrumental) {
+                    offset = 140; // Adjust offset for instrumental sections
+                }
 
                 gsap.to(container, {
                     duration: 0.5, // Adjust duration (in seconds)
@@ -237,10 +268,6 @@ function Lyrics() {
         }
     };
 
-    const handleProfileClick = () => {
-        alert('Profile clicked!');
-    };
-
     const handleSettingsClick = () => {
         alert('Settings clicked!');
     };
@@ -250,9 +277,19 @@ function Lyrics() {
     };
 
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
 
     return (
         <div className={`lyrics-view ${isLyricsVisible ? "block" : "hidden"} w-xs bg-[#00000038] flex flex-col`}>
+                    <SongInfoModal isOpen={isModalOpen} onClose={closeModal} />
             <div className="p-4 flex flex-row justify-between items-center">
                 <div className="flex flex-col max-w-[225px]">
                     <h2 className="text-white text-lg font-semibold truncate">
@@ -285,9 +322,8 @@ function Lyrics() {
                         id="lrcUpload"
                     />
                     <Dropdown>
-                        <DropdownItem onClick={handleProfileClick}>Song Info</DropdownItem>
-                        <DropdownItem onClick={() => fileInputRef.current?.click()}>Upload Lyrics (.lrc)</DropdownItem>
-                        <DropdownItem onClick={handleProfileClick}>Clear Lyrics (.lrc)</DropdownItem>
+                        <DropdownItem onClick={openModal}>Song Info</DropdownItem>
+                        <DropdownItem onClick={() => fileInputRef.current?.click()}>Add Lyrics (.lrc)</DropdownItem>
                         <DropdownSeparator />
                         <DropdownItem onClick={handleSettingsClick}>Settings</DropdownItem>
                         <DropdownItem onClick={handleLogoutClick}>Logout</DropdownItem>

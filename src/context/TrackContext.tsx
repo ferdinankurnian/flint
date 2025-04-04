@@ -1,11 +1,22 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { createContext, useContext, useState, ReactNode, useEffect, useMemo } from "react";
+
+export function generateSongId(track: Track): string {
+  const raw_id = `${track.artist}-${track.title}-${track.album}-${track.url}`;
+  const encoded = btoa(unescape(encodeURIComponent(raw_id))); // Encode agar aman
+  return encoded.replace(/[^a-zA-Z0-9]/g, ""); // Hapus karakter aneh
+}
 
 export interface Track {
+  song_id: string;
   url: string;
   title: string;
   artist: string;
   album: string;
   artworkUrl?: string;
+  year?: string;
+  duration?: string;
+  genre?: string;
+  lyrics?: string;
 }
 
 type TrackContextType = {
@@ -27,14 +38,22 @@ export function TrackProvider({ children }: { children: ReactNode }) {
   const [currentIndex, setCurrentIndex] = useState<number>(-1);
   const [isShuffling, setIsShuffling] = useState(false);
 
+  // **Gunakan useMemo untuk generate song_id sekali aja**
+  const trackWithId = useMemo(() => {
+    if (!currentTrack) return null;
+    return {
+      ...currentTrack,
+      song_id: currentTrack.song_id || generateSongId(currentTrack),
+    };
+  }, [currentTrack]);
+
   useEffect(() => {
-    if (!currentTrack) {
+    if (!trackWithId) {
       setCurrentIndex(-1);
       return;
     }
-    const index = tracks.findIndex((track) => track.url === currentTrack.url);
-    setCurrentIndex(index);
-  }, [currentTrack, tracks]);
+    setCurrentIndex(tracks.findIndex((t) => t.url === trackWithId.url));
+  }, [trackWithId, tracks]);
 
   const toggleShuffle = () => {
     if (!isShuffling) {
@@ -52,7 +71,17 @@ export function TrackProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <TrackContext.Provider value={{ tracks, setTracks, currentTrack, setCurrentTrack, currentIndex, isShuffling, toggleShuffle }}>
+    <TrackContext.Provider
+      value={{
+        tracks,
+        setTracks,
+        currentTrack: trackWithId,
+        setCurrentTrack,
+        currentIndex,
+        isShuffling,
+        toggleShuffle,
+      }}
+    >
       {children}
     </TrackContext.Provider>
   );

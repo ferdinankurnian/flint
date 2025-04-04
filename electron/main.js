@@ -1,19 +1,20 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import path from "path";
 import { fileURLToPath } from "url";
+// import db from "../src/db.js"; // Import database module
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 function createWindow () {
   const win = new BrowserWindow({
-    width: 800,
+    width: 1000,
     height: 600,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: false,
       contextIsolation: true,
-      icon: path.join(__dirname, "../public/flint.png"),
+      icon: path.join(__dirname, "public/flint.png"),
     },
   });
 
@@ -43,3 +44,23 @@ app.on("window-all-closed", () => {
     app.quit();
   }
 });
+
+// // Event buat nyimpen lirik
+// ipcMain.handle('save-lrc', (event, song_id, lrcContent) => {
+//   db.saveLrc(song_id, lrcContent);
+// });
+
+// // Event buat ngambil lirik
+// ipcMain.handle('get-lrc', (event, song_id) => {
+//   return db.getLrc(song_id);
+// });
+
+// // Event buat ngambil semua lirik buat settings
+// ipcMain.handle('get-all-lyrics', () => {
+//   return db.getAllLyrics();
+// });
+
+// // Event buat hapus lirik
+// ipcMain.handle('delete-lrc', (event, song_id) => {
+//   db.deleteLrc(song_id);
+// });
