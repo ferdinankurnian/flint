@@ -31,7 +31,7 @@ const InstrumentalIndicator = ({
 }) => {
     const dotsRef = useRef<(HTMLDivElement | null)[]>([]);
     const timelineRef = useRef<GSAPTimeline | null>(null);
-    const containerRef = useRef<HTMLDivElement | null>(null);
+    const dotsContainerRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         timelineRef.current = gsap.timeline({
@@ -80,15 +80,15 @@ const InstrumentalIndicator = ({
     }, [duration]);
 
     useEffect(() => {
-        if (containerRef.current) {
-            gsap.to(containerRef.current, {
+        if (dotsContainerRef.current) {
+            gsap.to(dotsContainerRef.current, {
                 duration: 0.5,
                 scale: isActive ? 1 : 0,
                 autoAlpha: isActive ? 1 : 0,
                 paddingTop: isActive ? '0.5rem' : 0,
                 paddingBottom: isActive ? '0.5rem' : 0,
                 ease: "power2.out",
-                transformOrigin: "left center"
+                transformOrigin: "center center"
             });
         }
         if (isActive && !isPaused) {
@@ -107,14 +107,16 @@ const InstrumentalIndicator = ({
 
     return (
         <div
-            ref={containerRef}
             className={`instrumental-dots flex items-center overflow-hidden ${!isActive ? 'py-0' : ''}`}
         >
-            <div className="flex space-x-[7px]">
+            <div
+                ref={dotsContainerRef}
+                className="flex space-x-[7px]"
+            >
                 {[0, 1, 2].map((i) => (
                     <div
                         key={i}
-                        className={`w-3 h-3 bg-white rounded-full opacity-30`}
+                        className="w-3 h-3 bg-white rounded-full opacity-30"
                         ref={(el) => {
                             if (el) dotsRef.current[i] = el;
                         }}
