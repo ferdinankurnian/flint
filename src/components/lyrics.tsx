@@ -107,21 +107,21 @@ const InstrumentalIndicator = ({
 
     return (
         <div
-            className={`instrumental-dots flex items-center overflow-hidden ${!isActive ? 'py-0' : ''}`}
+            className={`instrumental-dots flex items-center overflow-hidden transition-all duration-500 ${!isActive ? 'py-0 h-0' : 'h-7'}`}
         >
             <div
-                ref={dotsContainerRef}
-                className="flex space-x-[7px]"
+            ref={dotsContainerRef}
+            className="flex space-x-[7px]"
             >
-                {[0, 1, 2].map((i) => (
-                    <div
-                        key={i}
-                        className="w-3 h-3 bg-white rounded-full opacity-30"
-                        ref={(el) => {
-                            if (el) dotsRef.current[i] = el;
-                        }}
-                    />
-                ))}
+            {[0, 1, 2].map((i) => (
+                <div
+                key={i}
+                className="w-3 h-3 bg-white rounded-full opacity-30"
+                ref={(el) => {
+                    if (el) dotsRef.current[i] = el;
+                }}
+                />
+            ))}
             </div>
         </div>
     );
@@ -148,7 +148,7 @@ const LyricsDisplay = ({
 
                 // Check if the previous element is an instrumental indicator
                 if (activeIndex > 0 && lyrics[activeIndex - 1].instrumental) {
-                    offset = 140; // Adjust offset for instrumental sections
+                    offset = 144; // Adjust offset for instrumental sections
                 }
 
                 gsap.to(container, {
