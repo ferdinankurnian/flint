@@ -1,4 +1,6 @@
 import { useTrack, Track } from "../../context/TrackContext";
+import AddTracksButton from "./AddTracksButton";
+import DragDropArea from "./DragDropArea";
 import * as musicMetadata from "music-metadata";
 
 function generateSongId(track: Track): string {
@@ -10,8 +12,8 @@ function generateSongId(track: Track): string {
 function MusicUpload() {
     const { setTracks, setCurrentTrack, currentTrack, tracks } = useTrack();
 
-    const handleMusicUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const files = event.target.files;
+    const handleMusicUpload = async (input: React.ChangeEvent<HTMLInputElement> | FileList) => {
+        const files = input instanceof FileList ? input : input.target.files;
         if (files) {
             const newTracks: Track[] = [];
             for (let i = 0; i < files.length; i++) {
@@ -71,15 +73,15 @@ function MusicUpload() {
         }
     };
 
+    const handleFileDrop = (files: FileList) => {
+        handleMusicUpload({ target: { files } } as React.ChangeEvent<HTMLInputElement>);
+    };
+
     return (
-        <input
-            id="music-upload"
-            type="file"
-            accept="audio/*"
-            multiple
-            onChange={handleMusicUpload}
-            className="hidden"
-        />
+        <>
+            <AddTracksButton onFilesDropped={handleMusicUpload} />
+            {/* <DragDropArea onFileDrop={handleFileDrop} /> */}
+        </>
     );
 }
 

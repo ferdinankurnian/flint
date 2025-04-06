@@ -32,19 +32,22 @@ const InstrumentalIndicator = ({
     const dotsRef = useRef<(HTMLDivElement | null)[]>([]);
     const timelineRef = useRef<GSAPTimeline | null>(null);
     const dotsContainerRef = useRef<HTMLDivElement | null>(null);
+    const shouldRenderDots = duration >= 3;
 
     useEffect(() => {
         timelineRef.current = gsap.timeline({
             paused: true,
-            repeat: -1 // Infinite repeat
+            repeat: 0,
+            defaults: {
+                ease: "none",
+            }
         });
     
         // Sequential animation
-        if (dotsRef.current[0]) {
-            const fadeDuration = 0.3; // Fixed fade duration
-            const activeDuration = duration * 0.8;
+        if (shouldRenderDots && dotsRef.current[0]) {
+            const fadeDuration = 0.5;
+            const activeDuration = duration - fadeDuration;
             const individualDuration = activeDuration / 3;
-            const stayDuration = Math.max(0, duration - activeDuration - fadeDuration);
     
             timelineRef.current
                 .to(dotsRef.current[0], {
@@ -64,46 +67,42 @@ const InstrumentalIndicator = ({
                 })
                 .to([dotsRef.current[0], dotsRef.current[1], dotsRef.current[2]], {
                     opacity: 1,
-                    duration: stayDuration,
-                    ease: "none",
-                }, "+=0")
-                .to([dotsRef.current[0], dotsRef.current[1], dotsRef.current[2]], {
-                    opacity: 0.3,
                     duration: fadeDuration,
                     ease: "power2.out",
-                }, "+=0");
+                });
         }
     
         return () => {
             timelineRef.current?.kill();
         };
-    }, [duration]);
+    }, [duration, shouldRenderDots]);
 
     useEffect(() => {
         if (dotsContainerRef.current) {
             gsap.to(dotsContainerRef.current, {
                 duration: 0.5,
-                scale: isActive ? 1 : 0,
+                scale: isActive ? 1 : 0.5,
                 autoAlpha: isActive ? 1 : 0,
                 paddingTop: isActive ? '0.5rem' : 0,
                 paddingBottom: isActive ? '0.5rem' : 0,
                 ease: "power2.out",
-                transformOrigin: "center center"
+                transformOrigin: "center center",
             });
         }
-        if (isActive && !isPaused) {
+        if (isActive && !isPaused && shouldRenderDots) {
+            timelineRef.current?.restart();
             timelineRef.current?.play();
         } else {
             timelineRef.current?.pause();
             if (!isActive) {
                 dotsRef.current.forEach((dot) => {
                     if (dot) {
-                        gsap.to(dot, { opacity: 0.3, duration: 0.1 });
+                        gsap.to(dot, { opacity: 0.3, duration: 0.3 });
                     }
                 });
             }
         }
-    }, [isActive, isPaused]);
+    }, [isActive, isPaused, shouldRenderDots]);
 
     return (
         <div
@@ -113,7 +112,7 @@ const InstrumentalIndicator = ({
             ref={dotsContainerRef}
             className="flex space-x-[7px]"
             >
-            {[0, 1, 2].map((i) => (
+            {shouldRenderDots && [0, 1, 2].map((i) => (
                 <div
                 key={i}
                 className="w-3 h-3 bg-white rounded-full opacity-30"
@@ -209,7 +208,6 @@ const LyricsDisplay = ({
 };
 
 function Lyrics() {
-
     const { lyrics, activeLyricIndex, setLyrics } = useLyrics();
     const { currentTrack } = useTrack();
     const { isPlaying } = usePlayer();
