@@ -1,13 +1,8 @@
 import { useTrack, Track } from "../../context/TrackContext";
 import AddTracksButton from "./AddTracksButton";
-import DragDropArea from "./DragDropArea";
+// import DragDropArea from "./DragDropArea";
 import * as musicMetadata from "music-metadata";
-
-function generateSongId(track: Track): string {
-    const raw_id = `${track.artist}-${track.title}-${track.album}-${track.url}`;
-    const encoded = btoa(unescape(encodeURIComponent(raw_id))); // Encode agar aman
-    return encoded.replace(/[^a-zA-Z0-9]/g, ""); // Hapus karakter non-alphanumeric
-}
+import { generateSongId } from "../../context/TrackContext";
 
 function MusicUpload() {
     const { setTracks, setCurrentTrack, currentTrack, tracks } = useTrack();
@@ -73,9 +68,9 @@ function MusicUpload() {
         }
     };
 
-    const handleFileDrop = (files: FileList) => {
-        handleMusicUpload({ target: { files } } as React.ChangeEvent<HTMLInputElement>);
-    };
+    // const handleFileDrop = (files: FileList) => {
+    //     handleMusicUpload({ target: { files } } as React.ChangeEvent<HTMLInputElement>);
+    // };
 
     return (
         <>

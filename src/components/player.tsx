@@ -25,7 +25,7 @@ function Player() {
         if (audioRef.current) {
             audioRef.current.currentTime = Math.max(
                 0,
-                audioRef.current.currentTime - 10,
+                audioRef.current.currentTime - 5,
             );
         }
     };
@@ -34,7 +34,7 @@ function Player() {
         if (audioRef.current) {
             audioRef.current.currentTime = Math.min(
                 duration,
-                audioRef.current.currentTime + 10,
+                audioRef.current.currentTime + 5,
             );
         }
     };
@@ -97,7 +97,7 @@ function Player() {
 
         if (isPlaying) {
             audioRef.current.play().catch((err) => console.error("Playback failed:", err));
-            document.title = `${currentTrack.title} - ${currentTrack.artist} | Flint`;
+            document.title = `${currentTrack.title} - ${currentTrack.artist}`;
         } else {
             audioRef.current.pause();
             document.title = 'Flint';

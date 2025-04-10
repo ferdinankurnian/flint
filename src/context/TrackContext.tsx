@@ -1,9 +1,16 @@
 import { createContext, useContext, useState, ReactNode, useEffect, useMemo } from "react";
 
 export function generateSongId(track: Track): string {
-  const raw_id = `${track.artist}-${track.title}-${track.album}-${track.url}`;
-  const encoded = btoa(unescape(encodeURIComponent(raw_id))); // Encode agar aman
-  return encoded.replace(/[^a-zA-Z0-9]/g, ""); // Hapus karakter aneh
+  // Only use stable properties and normalize them to ensure consistent output
+  const artist = track.artist?.trim().toLowerCase().replace(/\s/g, '') || '';
+  const title = track.title?.trim().toLowerCase().replace(/\s/g, '') || '';
+  const album = track.album?.trim().toLowerCase().replace(/\s/g, '') || '';
+  
+  // Create a stable identifier string without dynamic content like URLs
+  const raw_id = `${artist}-${title}-${album}`;
+  
+  // Remove any non-alphanumeric characters that could cause inconsistency
+  return raw_id.replace(/[^a-zA-Z0-9]/g, '');
 }
 
 export interface Track {

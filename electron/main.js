@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import path from "path";
 import { fileURLToPath } from "url";
-// import db from "../src/db.js"; // Import database module
+import Database from 'better-sqlite3';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,7 +14,7 @@ function createWindow () {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: false,
       contextIsolation: true,
-      icon: path.join(__dirname, "public/flint.png"),
+      icon: path.join(__dirname, "../public/flint.png"),
     },
   });
 
@@ -30,6 +30,7 @@ function createWindow () {
 };
 
 app.whenReady().then(() => {
+  lyricsCache();
   createWindow();
 
   app.on("activate", () => {
@@ -45,22 +46,30 @@ app.on("window-all-closed", () => {
   }
 });
 
-// // Event buat nyimpen lirik
-// ipcMain.handle('save-lrc', (event, song_id, lrcContent) => {
-//   db.saveLrc(song_id, lrcContent);
-// });
+function lyricsCache() {
+  const db = new Database(path.join(app.getPath('userData'), 'flint.db'));
 
-// // Event buat ngambil lirik
-// ipcMain.handle('get-lrc', (event, song_id) => {
-//   return db.getLrc(song_id);
-// });
+  db.prepare(`
+    CREATE TABLE IF NOT EXISTS lyrics (
+      song_id TEXT PRIMARY KEY,
+      lyrics TEXT
+    )
+  `).run();
 
-// // Event buat ngambil semua lirik buat settings
-// ipcMain.handle('get-all-lyrics', () => {
-//   return db.getAllLyrics();
-// });
+  // Listener buat insert/update lirik
+  ipcMain.handle('save-lyrics', (event, songId, lyrics) => {
+    const stmt = db.prepare(`
+      INSERT INTO lyrics (song_id, lyrics)
+      VALUES (?, ?)
+      ON CONFLICT(song_id) DO UPDATE SET lyrics=excluded.lyrics
+    `);
+    stmt.run(songId, lyrics);
+  });
 
-// // Event buat hapus lirik
-// ipcMain.handle('delete-lrc', (event, song_id) => {
-//   db.deleteLrc(song_id);
-// });
+  // Listener buat ambil lirik
+  ipcMain.handle('get-lyrics', (event, songId) => {
+    const stmt = db.prepare(`SELECT lyrics FROM lyrics WHERE song_id = ?`);
+    const row = stmt.get(songId);
+    return row ? row.lyrics : null;
+  });
+}

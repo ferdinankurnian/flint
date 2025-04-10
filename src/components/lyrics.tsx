@@ -213,14 +213,50 @@ function Lyrics() {
     const { isPlaying } = usePlayer();
     const { isLyricsVisible } = useViewSection();
 
+    // Load lyrics from database when song changes
+    useEffect(() => {
+        const loadLyricsForTrack = async () => {
+            if (currentTrack) {
+                try {
+                    // Try to load lyrics from database
+                    const savedLyrics = await window.electron.getLyrics(currentTrack.song_id);
+                    
+                    if (savedLyrics) {
+                        // If lyrics exist in database, parse and set them
+                        const parsed = parseLyrics(savedLyrics);
+                        setLyrics(parsed);
+                    } else {
+                        // No lyrics in database
+                        setLyrics([]);
+                    }
+                } catch (err) {
+                    console.error('Error loading lyrics:', err);
+                    setLyrics([]);
+                }
+            }
+        };
+        
+        loadLyricsForTrack();
+    }, [currentTrack, setLyrics]);
+
     const handleLrcUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         try {
-            if (file) {
-                const text = await file.text();
-                const parsed = parseLyrics(text);
-                console.log("Parsed lyrics:", parsed); // Debug log
-                setLyrics(parsed);
+            if (file && currentTrack) {
+                // Check if lyrics already exist in the database
+                const existingLyrics = await window.electron.getLyrics(currentTrack.song_id);
+                
+                if (existingLyrics) {
+                    // If lyrics exist, parse and use them
+                    const parsed = parseLyrics(existingLyrics);
+                    setLyrics(parsed);
+                } else {
+                    // If no lyrics exist, save the new ones
+                    const text = await file.text();
+                    const parsed = parseLyrics(text);
+                    await window.electron.saveLyrics(currentTrack.song_id, text);
+                    setLyrics(parsed);
+                }
             }
         } catch (err) {
             console.error(err);
