@@ -16,7 +16,7 @@ function MusicItem() {
                 >
                     <img
                         alt="Album cover"
-                        className="w-12 h-12 rounded-lg"
+                        className="w-12 h-12 rounded-md"
                         src={track.artworkUrl || "https://placehold.co/50x50"}
                     />
                     <div className="min-w-0 flex-1">

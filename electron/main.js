@@ -72,4 +72,24 @@ function lyricsCache() {
     const row = stmt.get(songId);
     return row ? row.lyrics : null;
   });
+
+  // Listener buat edit lirik (spesifik untuk update)
+  ipcMain.handle('edit-lyrics', (event, songId, lyrics) => {
+    const stmt = db.prepare(`UPDATE lyrics SET lyrics = ? WHERE song_id = ?`);
+    const result = stmt.run(lyrics, songId);
+    return result.changes > 0; // Return true if a row was updated
+  });
+
+  // Listener buat delete lirik
+  ipcMain.handle('delete-lyrics', (event, songId) => {
+    const stmt = db.prepare(`DELETE FROM lyrics WHERE song_id = ?`);
+    const result = stmt.run(songId);
+    return result.changes > 0; // Return true if a row was deleted
+  });
+
+  // Listener buat ambil semua lirik
+  ipcMain.handle('get-all-lyrics', () => {
+    const stmt = db.prepare(`SELECT * FROM lyrics`);
+    return stmt.all();
+  });
 }

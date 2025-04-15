@@ -1,9 +1,9 @@
 import { Rewind, Play, Pause, FastForward, Playlist, Quotes, SpeakerHigh } from "@phosphor-icons/react";
-import { usePlayer } from "../context/PlayerContext";
-import { useTrack } from "../context/TrackContext";
-import { useLyrics } from "../context/LyricsContext";
+import { usePlayer } from "../../context/PlayerContext";
+import { useTrack } from "../../context/TrackContext";
+import { useLyrics } from "../../context/LyricsContext";
 import { useEffect } from "react";
-import { useViewSection } from "../context/ViewSectionContext";
+import { useViewSection } from "../../context/ViewSectionContext";
 
 function Player() {
 
@@ -134,7 +134,7 @@ function Player() {
             <div className="grow flex flex-col items-center justify-center">
                 <div className="w-72 flex flex-col items-center justify-center">
                     <div
-                        className={`${isPlaying ? "scale-100" : "scale-85"} np-artwork w-72 h-72 rounded-xl mb-4 transition-transform duration-300 ease-in-out`}
+                        className={`${isPlaying ? "scale-100" : "scale-85"} np-artwork w-72 h-72 rounded-lg mb-4 transition-transform duration-300 ease-in-out`}
                         style={{
                             backgroundImage: currentTrack?.artworkUrl
                                 ? `url(${currentTrack.artworkUrl})`

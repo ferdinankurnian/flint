@@ -1,13 +1,14 @@
 import React, { useEffect, useRef } from "react";
-import { useLyrics, Lyric } from "../context/LyricsContext";
-import { useTrack } from "../context/TrackContext";
-import { usePlayer } from "../context/PlayerContext";
-import { Dropdown, DropdownItem, DropdownSeparator } from './dropdown';
-import { useViewSection } from "../context/ViewSectionContext";
+import { useLyrics, Lyric } from "../../context/LyricsContext";
+import { useTrack } from "../../context/TrackContext";
+import { usePlayer } from "../../context/PlayerContext";
+import { Dropdown, DropdownItem, DropdownSeparator } from "../../components/dropdown";
+import { useViewSection } from "../../context/ViewSectionContext";
 import gsap from "gsap";
 import ScrollToPlugin from 'gsap/ScrollToPlugin';
 gsap.registerPlugin(ScrollToPlugin);
-import SongInfoModal from "./tracklist/songInfo";
+import SongInfoModal from "../../components/tracklist/songInfo";
+import SettingsModal from "../../components/settings/settings";
 
 const LyricLine = ({ text, isActive }: { text: string; isActive: boolean }) => {
     return (
@@ -224,9 +225,11 @@ function Lyrics() {
                     if (savedLyrics) {
                         // If lyrics exist in database, parse and set them
                         const parsed = parseLyrics(savedLyrics);
+                        currentTrack.lyrics = savedLyrics;
                         setLyrics(parsed);
                     } else {
                         // No lyrics in database
+                        currentTrack.lyrics = "";
                         setLyrics([]);
                     }
                 } catch (err) {
@@ -244,17 +247,20 @@ function Lyrics() {
         try {
             if (file && currentTrack) {
                 // Check if lyrics already exist in the database
+                const text = await file.text();
                 const existingLyrics = await window.electron.getLyrics(currentTrack.song_id);
                 
                 if (existingLyrics) {
                     // If lyrics exist, parse and use them
-                    const parsed = parseLyrics(existingLyrics);
+                    const parsed = parseLyrics(text);
+                    await window.electron.editLyrics(currentTrack.song_id, text);
+                    currentTrack.lyrics = text;
                     setLyrics(parsed);
                 } else {
                     // If no lyrics exist, save the new ones
-                    const text = await file.text();
                     const parsed = parseLyrics(text);
                     await window.electron.saveLyrics(currentTrack.song_id, text);
+                    currentTrack.lyrics = text;
                     setLyrics(parsed);
                 }
             }
@@ -304,28 +310,21 @@ function Lyrics() {
         }
     };
 
-    const handleSettingsClick = () => {
-        alert('Settings clicked!');
-    };
+    // const handleSettingsClick = () => {
+    //     alert('Settings clicked!');
+    // };
 
     const handleLogoutClick = () => {
         alert('Logout clicked!');
     };
 
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [isModalOpen, setIsModalOpen] = React.useState(false);
 
-    const openModal = () => {
-        setIsModalOpen(true);
-    };
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-    };
+    const openSingInfo = SongInfoModal();
+    const openSettingsModal = SettingsModal();
 
     return (
         <div className={`lyrics-view ${isLyricsVisible ? "block" : "hidden"} w-xs bg-[#00000038] flex flex-col`}>
-                    <SongInfoModal isOpen={isModalOpen} onClose={closeModal} />
             <div className="p-4 flex flex-row justify-between items-center">
                 <div className="flex flex-col max-w-[225px]">
                     <h2 className="text-white text-lg font-semibold truncate">
@@ -336,19 +335,6 @@ function Lyrics() {
                     </p>
                 </div>
                 <div className="flex space-x-4">
-                    {/* <input
-                        type="file"
-                        accept=".lrc"
-                        onChange={handleLrcUpload}
-                        className="hidden"
-                        id="lrcUpload"
-                    />
-                    <label
-                        htmlFor="lrcUpload"
-                        className="text-white hover:bg-[#00000038] rounded-lg p-2 cursor-pointer"
-                    >
-                        <DotsThreeVertical size={24} />
-                    </label> */}
                     <input
                         type="file"
                         ref={fileInputRef}
@@ -358,11 +344,11 @@ function Lyrics() {
                         id="lrcUpload"
                     />
                     <Dropdown>
-                        <DropdownItem onClick={openModal}>Song Info</DropdownItem>
-                        <DropdownItem onClick={() => fileInputRef.current?.click()}>Add Lyrics (.lrc)</DropdownItem>
+                        <DropdownItem onClick={openSingInfo} disabled={!currentTrack}>Song Info</DropdownItem>
+                        <DropdownItem onClick={() => fileInputRef.current?.click()}  disabled={!currentTrack}>{currentTrack?.lyrics ? 'Change Lyrics (.lrc)' : 'Add Lyrics (.lrc)'}</DropdownItem>
                         <DropdownSeparator />
-                        <DropdownItem onClick={handleSettingsClick}>Settings</DropdownItem>
-                        <DropdownItem onClick={handleLogoutClick}>Logout</DropdownItem>
+                        <DropdownItem onClick={openSettingsModal}>Settings</DropdownItem>
+                        <DropdownItem onClick={handleLogoutClick}>About Flint</DropdownItem>
                     </Dropdown>
                 </div>
             </div>

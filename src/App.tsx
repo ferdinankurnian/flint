@@ -1,9 +1,8 @@
 import { AppProviders } from "./context/AppProvider";
-import Player from "./components/player";
-import TrackList from "./components/tracklist";
-import Audio from "./components/audio";
-import Lyrics from "./components/lyrics";
 import { useTrack } from "./context/TrackContext";
+import Audio from "./components/audio";
+import Home from "./pages/Home/home";
+import Modal from "./components/modal/Modal";
 
 function App() {
 
@@ -19,6 +18,7 @@ function MainContent() {
 
   return (
     <>
+      <Modal />
       <div
         className="h-screen w-screen flex relative"
         style={{
@@ -35,16 +35,7 @@ function MainContent() {
           style={{ backdropFilter: "blur(75px)" }}
         />
         <div className="relative z-10 flex w-full">
-          {/* Left Section: Track List */}
-          <TrackList />
-
-
-          {/* Middle Section: Player */}
-          <Player />
-
-          {/* Right Section: Lyrics */}
-          <Lyrics />
-
+          <Home />
         </div>
       </div>
       <Audio />

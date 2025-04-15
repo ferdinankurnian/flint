@@ -1,10 +1,10 @@
 import { Plus, Repeat, RepeatOnce, Shuffle } from '@phosphor-icons/react';
-import { useTrack } from '../context/TrackContext';
-import { usePlayer } from '../context/PlayerContext';
-import { useViewSection } from '../context/ViewSectionContext';
-import MusicItem from './tracklist/musicItem';
-import ClearTracks from './tracklist/clearTracks';
-import MusicUpload from './tracklist/musicUpload';
+import { useTrack } from '../../context/TrackContext';
+import { usePlayer } from '../../context/PlayerContext';
+import { useViewSection } from '../../context/ViewSectionContext';
+import MusicItem from '../../components/tracklist/musicItem';
+import ClearTracks from '../../components/tracklist/clearTracks';
+import MusicUpload from '../../components/tracklist/musicUpload';
 
 function Tracklist() {
 

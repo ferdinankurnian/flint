@@ -1,11 +1,21 @@
 import { DotsThreeVertical } from '@phosphor-icons/react';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 
-const DropdownItem = ({ children, onClick }: { children: React.ReactNode; onClick: () => void }) => {
+const DropdownItem = ({ 
+  children, 
+  onClick, 
+  disabled = false 
+}: { 
+  children: React.ReactNode; 
+  onClick: () => void;
+  disabled?: boolean;
+}) => {
   // Get access to the parent's setIsOpen function through context
   const { closeDropdown } = useDropdownContext();
   
   const handleClick = () => {
+    if (disabled) return;
+    
     // First execute the original onClick
     onClick();
     // Then close the dropdown
@@ -14,8 +24,13 @@ const DropdownItem = ({ children, onClick }: { children: React.ReactNode; onClic
   
   return (
     <button
-      className="block w-full text-left px-4 py-2 text-sm hover:bg-[#00000057] hover:text-gray-100 text-gray-300"
+      className={`block w-full text-left px-4 py-2 text-sm whitespace-nowrap overflow-hidden text-ellipsis
+        ${disabled 
+          ? 'opacity-50 text-gray-500' 
+          : 'hover:bg-[#00000057] hover:text-gray-100 text-gray-300'
+        }`}
       onClick={handleClick}
+      disabled={disabled}
     >
       {children}
     </button>
@@ -78,7 +93,7 @@ const Dropdown = ({ children }: { children: React.ReactNode }) => {
         <div
           className={`${
             isOpen ? 'block' : 'hidden'
-          } origin-top-right absolute right-0 mt-2 w-40 z-50 rounded-md shadow-lg bg-black/50 backdrop-blur-sm transition-all duration-150`}
+          } origin-top-right absolute right-0 mt-2 w-auto z-50 rounded-md shadow-lg bg-black/50 backdrop-blur-sm transition-all duration-150`}
           role="menu"
           aria-orientation="vertical"
           aria-labelledby="menu-button"
