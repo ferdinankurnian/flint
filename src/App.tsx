@@ -2,7 +2,7 @@ import { AppProviders } from "./context/AppProvider";
 import { useTrack } from "./context/TrackContext";
 import Audio from "./components/audio";
 import Home from "./pages/Home/home";
-import Modal from "./components/modal/Modal";
+import Modal from "./components/Modal";
 
 function App() {
 

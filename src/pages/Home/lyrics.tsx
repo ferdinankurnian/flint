@@ -7,8 +7,8 @@ import { useViewSection } from "../../context/ViewSectionContext";
 import gsap from "gsap";
 import ScrollToPlugin from 'gsap/ScrollToPlugin';
 gsap.registerPlugin(ScrollToPlugin);
-import SongInfoModal from "../../components/tracklist/songInfo";
-import SettingsModal from "../../components/settings/settings";
+import SongInfoModal from "../../features/tracks/songInfo";
+import SettingsModal from "../../components/settingsModal";
 
 const LyricLine = ({ text, isActive }: { text: string; isActive: boolean }) => {
     return (
@@ -326,13 +326,20 @@ function Lyrics() {
     return (
         <div className={`lyrics-view ${isLyricsVisible ? "block" : "hidden"} w-xs bg-[#00000038] flex flex-col`}>
             <div className="p-4 flex flex-row justify-between items-center">
-                <div className="flex flex-col max-w-[225px]">
-                    <h2 className="text-white text-lg font-semibold truncate">
-                        {currentTrack?.title || "No Track"}
-                    </h2>
-                    <p className="text-gray-300 text-sm truncate">
-                        {currentTrack?.artist || "Unknown"}
-                    </p>
+                <div className="flex flex-row space-x-3 items-center">  
+                    {/* <img
+                        alt="Album cover"
+                        className="w-12 h-12 rounded-md"
+                        src={currentTrack?.artworkUrl || "https://placehold.co/50x50"}
+                    /> */}
+                    <div className="flex flex-col max-w-[225px]">
+                        <h2 className="text-white text-md font-semibold truncate">
+                            {currentTrack?.title || "No Track"}
+                        </h2>
+                        <p className="text-gray-300 text-sm truncate">
+                            {currentTrack?.artist || "Unknown"}
+                        </p>
+                    </div>
                 </div>
                 <div className="flex space-x-4">
                     <input

@@ -2,9 +2,9 @@ import { Plus, Repeat, RepeatOnce, Shuffle } from '@phosphor-icons/react';
 import { useTrack } from '../../context/TrackContext';
 import { usePlayer } from '../../context/PlayerContext';
 import { useViewSection } from '../../context/ViewSectionContext';
-import MusicItem from '../../components/tracklist/musicItem';
-import ClearTracks from '../../components/tracklist/clearTracks';
-import MusicUpload from '../../components/tracklist/musicUpload';
+import MusicItem from '../../features/tracks/musicItem';
+import ClearTracks from '../../features/tracks/clearTracks';
+import MusicUpload from '../../features/tracks/musicUpload';
 
 function Tracklist() {
 
@@ -17,7 +17,7 @@ function Tracklist() {
             <div className="flex justify-between items-center p-4">
                 <div className="flex flex-col">
                     <h2 className="text-white text-sm">Tracks</h2>
-                    <p className="text-white text-lg font-semibold">
+                    <p className="text-white text-md font-semibold">
                         {tracks.length} Songs
                     </p>
                 </div>

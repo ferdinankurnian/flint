@@ -1,4 +1,4 @@
-import { useModal } from "../../context/ModalContext";
+import { useModal } from "../context/ModalContext";
 
 const SettingsModal = () => {
   const { openModal, setContentModal } = useModal();

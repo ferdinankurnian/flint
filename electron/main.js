@@ -15,6 +15,7 @@ function createWindow () {
       nodeIntegration: false,
       contextIsolation: true,
       icon: path.join(__dirname, "../public/flint.png"),
+      backgroundThrottling: false
     },
   });
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { X } from "@phosphor-icons/react";
-import { useModal } from "../../context/ModalContext";
+import { useModal } from "../context/ModalContext";
 
 const Modal: React.FC = () => {
 
