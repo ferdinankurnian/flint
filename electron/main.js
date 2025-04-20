@@ -19,9 +19,9 @@ function createWindow () {
     },
   });
 
-  win.webContents.on("did-finish-load", () => {
-    win.webContents.setZoomFactor(0.9); // Set zoom ke 90%
-  });
+  // win.webContents.on("did-finish-load", () => {
+  //   win.webContents.setZoomFactor(0.9); // Set zoom ke 90%
+  // });
 
   if (process.env.NODE_ENV === "development") {
     win.loadURL("http://localhost:5173"); // Vite dev server

@@ -1,9 +1,10 @@
-import { Rewind, Play, Pause, FastForward, Playlist, Quotes, SpeakerHigh } from "@phosphor-icons/react";
+import { Rewind, Play, Pause, FastForward, Playlist, Quotes, SpeakerHigh, SpeakerLow, SpeakerX } from "@phosphor-icons/react";
 import { usePlayer } from "../../context/PlayerContext";
 import { useTrack } from "../../context/TrackContext";
 import { useLyrics } from "../../context/LyricsContext";
-import { useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useViewSection } from "../../context/ViewSectionContext";
+import { VolumeSlider } from '../../components/VolumeSlider';
 
 function Player() {
 
@@ -11,6 +12,14 @@ function Player() {
     const { tracks, currentTrack, currentIndex, setCurrentTrack } = useTrack();
     const { setActiveLyricIndex } = useLyrics();
     const { toggleTracklist, toggleLyrics, isLyricsVisible, isTracklistVisible } = useViewSection();
+    const [volume, setVolume] = useState(70);
+    const [isVolumeOpen, setIsVolumeOpen] = useState(false);
+    const volumeButtonRef = useRef<HTMLButtonElement>(null);
+
+    const handleVolumeChange = (newVolume: number) => {
+        setVolume(newVolume);
+        // Add your actual volume change logic here
+    };
     
     const handlePlayPause = () => {
         if (isPlaying) {
@@ -78,9 +87,6 @@ function Player() {
                 album: currentTrack.album,
                 artwork: currentTrack.artworkUrl ? [
                     // Provide multiple sizes for better compatibility
-                    { src: currentTrack.artworkUrl, sizes: "96x96", type: "image/jpeg" },
-                    { src: currentTrack.artworkUrl, sizes: "128x128", type: "image/jpeg" },
-                    { src: currentTrack.artworkUrl, sizes: "256x256", type: "image/jpeg" },
                     { src: currentTrack.artworkUrl, sizes: "512x512", type: "image/jpeg" }
                 ] : [],
             });
@@ -218,12 +224,29 @@ function Player() {
                     </button>
                     <div className={`absolute ${isTracklistVisible ? "" : "hidden"} bottom-1 left-1/2 transform -translate-x-1/2 w-[3px] h-[3px] bg-[#ffffff8f] rounded-full`}></div>
                 </div>
-                <button
-                    className="text-[#ffffff8f] cursor-pointer p-2 rounded-lg hover:text-[#fff] hover:bg-[#00000038]"
-                    //onClick={toggleVolume}
-                >
-                        <SpeakerHigh size={24} weight="regular" />
-                </button>
+                <div className="relative">
+                    <button
+                        ref={volumeButtonRef}
+                        className="text-[#ffffff8f] cursor-pointer p-2 rounded-lg hover:text-[#fff] hover:bg-[#00000038]"
+                        onClick={() => setIsVolumeOpen(!isVolumeOpen)}
+                        >
+                        {volume === 0 ? (
+                            <SpeakerX size={24} weight="regular" />
+                        ) : volume < 50 ? (
+                            <SpeakerLow size={24} weight="regular" />
+                        ) : (
+                            <SpeakerHigh size={24} weight="regular" />
+                        )}
+                    </button>
+                    <div className={`absolute ${isVolumeOpen ? "" : "hidden"} bottom-1 left-1/2 transform -translate-x-1/2 w-[3px] h-[3px] bg-[#ffffff8f] rounded-full`}></div>
+                    <VolumeSlider 
+                        volume={volume}
+                        onVolumeChange={handleVolumeChange}
+                        isOpen={isVolumeOpen}
+                        onClose={() => setIsVolumeOpen(false)}
+                        buttonRef={volumeButtonRef}
+                    />
+                </div>
                 <div className="relative">
                     <button
                         className="text-[#ffffff8f] cursor-pointer p-2 rounded-lg hover:text-[#fff] hover:bg-[#00000038]"
