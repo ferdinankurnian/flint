@@ -1,33 +1,34 @@
-import { DotsThreeVertical } from '@phosphor-icons/react';
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { DotsThreeVertical } from "@phosphor-icons/react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 
-const DropdownItem = ({ 
-  children, 
-  onClick, 
-  disabled = false 
-}: { 
-  children: React.ReactNode; 
+const DropdownItem = ({
+  children,
+  onClick,
+  disabled = false,
+}: {
+  children: React.ReactNode;
   onClick: () => void;
   disabled?: boolean;
 }) => {
   // Get access to the parent's setIsOpen function through context
   const { closeDropdown } = useDropdownContext();
-  
+
   const handleClick = () => {
     if (disabled) return;
-    
+
     // First execute the original onClick
     onClick();
     // Then close the dropdown
     closeDropdown();
   };
-  
+
   return (
     <button
-      className={`block w-full text-left px-4 py-2 text-sm whitespace-nowrap overflow-hidden text-ellipsis
-        ${disabled 
-          ? 'opacity-50 text-gray-500' 
-          : 'hover:bg-[#00000057] hover:text-gray-100 text-gray-300'
+      className={`block w-full text-left px-4 py-2 text-xs whitespace-nowrap overflow-hidden text-ellipsis
+        ${
+          disabled
+            ? "opacity-50 text-gray-500"
+            : "hover:bg-[#00000057] hover:text-gray-100 text-gray-300"
         }`}
       onClick={handleClick}
       disabled={disabled}
@@ -42,8 +43,8 @@ const DropdownSeparator = () => (
 );
 
 // Create a context to share the setIsOpen function
-const DropdownContext = React.createContext<{ closeDropdown: () => void }>({ 
-  closeDropdown: () => {} 
+const DropdownContext = React.createContext<{ closeDropdown: () => void }>({
+  closeDropdown: () => {},
 });
 
 const useDropdownContext = () => React.useContext(DropdownContext);
@@ -67,11 +68,11 @@ const Dropdown = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen, handleClickOutside]);
 
@@ -85,14 +86,15 @@ const Dropdown = ({ children }: { children: React.ReactNode }) => {
             id="menu-button"
             aria-expanded={isOpen}
             aria-haspopup="true"
-            onClick={() => setIsOpen(!isOpen)}>
+            onClick={() => setIsOpen(!isOpen)}
+          >
             <DotsThreeVertical size={24} />
           </button>
         </div>
 
         <div
           className={`${
-            isOpen ? 'block' : 'hidden'
+            isOpen ? "block" : "hidden"
           } origin-top-right absolute right-0 mt-2 w-auto z-50 rounded-md shadow-lg bg-black/50 backdrop-blur-sm transition-all duration-150`}
           role="menu"
           aria-orientation="vertical"

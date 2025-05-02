@@ -1,12 +1,12 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import path from "path";
 import { fileURLToPath } from "url";
-import Database from 'better-sqlite3';
+import Database from "better-sqlite3";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-function createWindow () {
+function createWindow() {
   const win = new BrowserWindow({
     width: 1000,
     height: 600,
@@ -15,7 +15,7 @@ function createWindow () {
       nodeIntegration: false,
       contextIsolation: true,
       icon: path.join(__dirname, "../public/flint.png"),
-      backgroundThrottling: false
+      backgroundThrottling: false,
     },
   });
 
@@ -28,7 +28,7 @@ function createWindow () {
   } else {
     win.loadFile(path.join(__dirname, "../dist/index.html")); // Production build
   }
-};
+}
 
 app.whenReady().then(() => {
   lyricsCache();
@@ -48,17 +48,19 @@ app.on("window-all-closed", () => {
 });
 
 function lyricsCache() {
-  const db = new Database(path.join(app.getPath('userData'), 'flint.db'));
+  const db = new Database(path.join(app.getPath("userData"), "flint.db"));
 
-  db.prepare(`
+  db.prepare(
+    `
     CREATE TABLE IF NOT EXISTS lyrics (
       song_id TEXT PRIMARY KEY,
       lyrics TEXT
     )
-  `).run();
+  `,
+  ).run();
 
   // Listener buat insert/update lirik
-  ipcMain.handle('save-lyrics', (event, songId, lyrics) => {
+  ipcMain.handle("save-lyrics", (event, songId, lyrics) => {
     const stmt = db.prepare(`
       INSERT INTO lyrics (song_id, lyrics)
       VALUES (?, ?)
@@ -68,28 +70,28 @@ function lyricsCache() {
   });
 
   // Listener buat ambil lirik
-  ipcMain.handle('get-lyrics', (event, songId) => {
+  ipcMain.handle("get-lyrics", (event, songId) => {
     const stmt = db.prepare(`SELECT lyrics FROM lyrics WHERE song_id = ?`);
     const row = stmt.get(songId);
     return row ? row.lyrics : null;
   });
 
   // Listener buat edit lirik (spesifik untuk update)
-  ipcMain.handle('edit-lyrics', (event, songId, lyrics) => {
+  ipcMain.handle("edit-lyrics", (event, songId, lyrics) => {
     const stmt = db.prepare(`UPDATE lyrics SET lyrics = ? WHERE song_id = ?`);
     const result = stmt.run(lyrics, songId);
     return result.changes > 0; // Return true if a row was updated
   });
 
   // Listener buat delete lirik
-  ipcMain.handle('delete-lyrics', (event, songId) => {
+  ipcMain.handle("delete-lyrics", (event, songId) => {
     const stmt = db.prepare(`DELETE FROM lyrics WHERE song_id = ?`);
     const result = stmt.run(songId);
     return result.changes > 0; // Return true if a row was deleted
   });
 
   // Listener buat ambil semua lirik
-  ipcMain.handle('get-all-lyrics', () => {
+  ipcMain.handle("get-all-lyrics", () => {
     const stmt = db.prepare(`SELECT * FROM lyrics`);
     return stmt.all();
   });

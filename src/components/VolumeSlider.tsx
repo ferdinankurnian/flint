@@ -46,7 +46,7 @@ export const VolumeSlider = ({ volume, onVolumeChange, isOpen, onClose, buttonRe
   return (
     <div 
       ref={sliderRef}
-      className="absolute bottom-12 left-1/2 transform -translate-x-1/2 bg-[#1a1a1a] gap-3 p-3 rounded-lg shadow-lg z-50 flex flex-row items-center"
+      className="absolute bottom-12 left-1/2 transform -translate-x-1/2 bg-black/50 backdrop-blur-sm gap-3 p-3 rounded-lg shadow-lg z-50 flex flex-row items-center"
       style={{ minWidth: '200px' }}
     >
       <button 
