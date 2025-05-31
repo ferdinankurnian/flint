@@ -10,11 +10,11 @@ function createWindow() {
   const win = new BrowserWindow({
     width: 1000,
     height: 600,
+    icon: path.join(__dirname, "../public/flint.png"),
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: false,
       contextIsolation: true,
-      icon: path.join(__dirname, "../public/flint.png"),
       backgroundThrottling: false,
     },
   });
