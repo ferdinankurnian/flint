@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 function createWindow() {
   const win = new BrowserWindow({
     width: 1000,
-    height: 600,
+    height: 610,
     icon: path.join(__dirname, "../public/flint.png"),
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
@@ -23,11 +23,11 @@ function createWindow() {
   //   win.webContents.setZoomFactor(0.9); // Set zoom ke 90%
   // });
 
-  if (process.env.NODE_ENV === "development") {
+  // if (process.env.NODE_ENV === "development") {
     win.loadURL("http://localhost:5173"); // Vite dev server
-  } else {
-    win.loadFile(path.join(__dirname, "../dist/index.html")); // Production build
-  }
+  // } else {
+    // win.loadFile(path.join(__dirname, "../dist/index.html")); // Production build
+  // }
 }
 
 app.whenReady().then(() => {

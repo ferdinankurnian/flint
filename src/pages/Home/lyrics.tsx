@@ -17,8 +17,8 @@ import SettingsModal from "../../components/settingsModal";
 const LyricLine = ({ text, isActive }: { text: string; isActive: boolean }) => {
   return (
     <div
-      className={`lyric-line text-2xl font-bold py-3 origin-left transition duration-300 ease-in-out transform ${
-        isActive ? "opacity-100 scale-100" : "opacity-30 scale-95"
+      className={`lyric-line text-2xl font-bold w-[95%] py-4 origin-left transition duration-300 ease-in-out delay-100 transform ${
+        isActive ? "opacity-100 scale-100" : "opacity-20 scale-95 blur-[1px]"
       }`}
     >
       {text}
@@ -114,12 +114,12 @@ const InstrumentalIndicator = ({
     <div
       className={`instrumental-dots flex items-center overflow-hidden transition-all duration-500 ${!isActive ? "py-0 h-0" : "h-7"}`}
     >
-      <div ref={dotsContainerRef} className="flex space-x-[7px]">
+      <div ref={dotsContainerRef} className="flex space-x-[6px]">
         {shouldRenderDots &&
           [0, 1, 2].map((i) => (
             <div
               key={i}
-              className="w-3 h-3 bg-white rounded-full opacity-30"
+              className="w-3 h-3 bg-white rounded-full opacity-20"
               ref={(el) => {
                 if (el) dotsRef.current[i] = el;
               }}
@@ -147,7 +147,7 @@ const LyricsDisplay = ({
       if (activeElement) {
         const container = lyricsContainerRef.current;
         const elementPosition = (activeElement as HTMLElement).offsetTop;
-        let offset = 115; // Adjust this value to change offset (in pixels)
+        let offset = 120; // Adjust this value to change offset (in pixels)
 
         // Check if the previous element is an instrumental indicator
         if (activeIndex > 0 && lyrics[activeIndex - 1].instrumental) {
@@ -155,12 +155,13 @@ const LyricsDisplay = ({
         }
 
         gsap.to(container, {
-          duration: 0.5, // Adjust duration (in seconds)
+          // delay: -0.2,
+          duration: 0.8, // Adjust duration (in seconds)
           scrollTo: {
             y: elementPosition - offset,
             autoKill: true,
           },
-          ease: "power2.out", // Smooth easing function
+          ease: "expo.out", // Smooth easing function
         });
       }
     }
@@ -339,11 +340,11 @@ function Lyrics() {
       <div className="p-4 gap-4 flex justify-between items-center">
         {/* Track Info */}
         <div className="flex items-center gap-3 flex-1 min-w-0">
-          {/* <img
-                        alt="Album cover"
-                        className="w-12 h-12 rounded-sm flex-shrink-0"
-                        src={currentTrack?.artworkUrl || "https://placehold.co/50x50"}
-                    /> */}
+          <img
+              alt="Album cover"
+              className="w-12 h-12 rounded-sm flex-shrink-0"
+              src={currentTrack?.artworkUrl || "https://placehold.co/50x50"}
+          />
           <div className="min-w-0 overflow-hidden">
             <h2 className="text-white text-sm font-semibold truncate w-full">
               {currentTrack?.title || "No Track"}

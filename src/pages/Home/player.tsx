@@ -132,7 +132,7 @@ function Player() {
       audioRef.current
         .play()
         .catch((err) => console.error("Playback failed:", err));
-      document.title = `${currentTrack.title} - ${currentTrack.artist}`;
+      document.title = `${currentTrack.artist} - ${currentTrack.title}`;
     } else {
       audioRef.current.pause();
       document.title = "Flint";

@@ -8,9 +8,12 @@ function Audio() {
     const { tracks, setCurrentTrack, currentIndex, currentTrack } = useTrack();
     const { lyrics, setActiveLyricIndex } = useLyrics();
 
+    // Trigger lyric about 100ms earlier for smoother sync
     const updateActiveLyric = (time: number) => {
+        const EARLY_OFFSET = 0.6; // seconds (100ms)
+        const adjustedTime = time + EARLY_OFFSET;
         const endMarker = lyrics.find((lyric) => lyric.endMarker);
-        if (endMarker && time >= endMarker.time!) {
+        if (endMarker && adjustedTime >= endMarker.time!) {
             setActiveLyricIndex(-1); // Reset after end marker
         } else {
             const activeIndex = lyrics.findIndex((lyric, index) => {
@@ -18,7 +21,7 @@ function Audio() {
                 const isInstrumental = lyric.instrumental;
                 const isLyric = !lyric.inactive && !lyric.endMarker && !lyric.instrumental;
                 const isWithinTime =
-                    lyric.time! <= time && (!nextLyric || nextLyric.time! > time);
+                    lyric.time! <= adjustedTime && (!nextLyric || nextLyric.time! > adjustedTime);
                 return (isLyric || isInstrumental) && isWithinTime;
             });
             setActiveLyricIndex(activeIndex);

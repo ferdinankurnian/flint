@@ -8,7 +8,7 @@
     "start": "vite",
     "electron:dev": "pnpm build && electron electron/main.js",
     "electron:build": "pnpm build && electron-builder",
-    "dev": "cross-env NODE_ENV=development concurrently \"vite\" \"wait-on tcp:5173 && electron electron/main.js\"",
+    "dev": "concurrently \"vite\" \"electron electron/main.js --enable-features=UseOzonePlatform --ozone-platform=wayland\"",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
