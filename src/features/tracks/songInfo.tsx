@@ -17,8 +17,8 @@ function SongInfoModal() {
           />
           <div className="mt-4 text-center">
             <h2 className="text-xl font-bold">{currentTrack?.title || "No Tracks"}</h2>
-            <p className="text-sm text-gray-400">{currentTrack?.artist || "Unknown"}</p>
-            <p className="text-sm text-gray-400">{currentTrack?.album || "Unknown"}</p>
+            <p className="text-sm text-neutral-400">{currentTrack?.artist || "Unknown"}</p>
+            <p className="text-sm text-neutral-400">{currentTrack?.album || "Unknown"}</p>
           </div>
         </div>
         <div className="w-full md:w-1/2 p-4">
@@ -52,8 +52,8 @@ const Tabs = ({ children }: { children: React.ReactNode }) => {
             key={(child as React.ReactElement<{ label: string }>).props.label}
             className={`px-3 py-1 -mb-px w-full sm:w-auto font-semibold cursor-pointer rounded-md ${
               activeTab === (child as React.ReactElement<{ label: string }>).props.label
-                ? "bg-gray-800"
-                : "text-gray-500 hover:text-gray-300"
+                ? "bg-neutral-800"
+                : "text-neutral-500 hover:text-neutral-300"
             }`}
             onClick={() =>
               setActiveTab((child as React.ReactElement<{ label: string }>).props.label)
@@ -81,12 +81,12 @@ const Tab = ({ label, children }: { label: string; children: React.ReactNode }) 
 const Details = ({ song }: { song: any }) => {
   return (
     <div className="flex flex-col space-y-2">
-      <div><h1 className="font-semibold text-lg">Song Name:</h1> <p className="text-gray-300 text-md">{song.title || "-"}</p></div>
-      <div><h1 className="font-semibold text-lg">Artist/Band:</h1> <p className="text-gray-300 text-md">{song.artist || "-"}</p></div>
-      <div><h1 className="font-semibold text-lg">Album:</h1> <p className="text-gray-300 text-md">{song.album || "-"}</p></div>
-      <div><h1 className="font-semibold text-lg">Release Year:</h1> <p className="text-gray-300 text-md">{song.year || "-"}</p></div>
-      <div><h1 className="font-semibold text-lg">Duration:</h1> <p className="text-gray-300 text-md">{song.duration || "-"}</p></div>
-      <div><h1 className="font-semibold text-lg">Genre:</h1> <p className="text-gray-300 text-md">{song.genre || "-"}</p></div>
+      <div><h1 className="font-semibold text-lg">Song Name:</h1> <p className="text-neutral-300 text-md">{song.title || "-"}</p></div>
+      <div><h1 className="font-semibold text-lg">Artist/Band:</h1> <p className="text-neutral-300 text-md">{song.artist || "-"}</p></div>
+      <div><h1 className="font-semibold text-lg">Album:</h1> <p className="text-neutral-300 text-md">{song.album || "-"}</p></div>
+      <div><h1 className="font-semibold text-lg">Release Year:</h1> <p className="text-neutral-300 text-md">{song.year || "-"}</p></div>
+      <div><h1 className="font-semibold text-lg">Duration:</h1> <p className="text-neutral-300 text-md">{song.duration || "-"}</p></div>
+      <div><h1 className="font-semibold text-lg">Genre:</h1> <p className="text-neutral-300 text-md">{song.genre || "-"}</p></div>
     </div>
   );
 };

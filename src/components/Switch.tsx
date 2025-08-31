@@ -39,7 +39,7 @@ export const Switch: React.FC<SwitchProps> = ({
       <div
         className={`
           w-11 h-6
-          ${inputChecked ? "bg-blue-600" : "bg-gray-600"}
+          ${inputChecked ? "bg-blue-600" : "bg-neutral-600"}
           rounded-full transition-colors duration-200
           relative peer-checked:bg-blue-600
           after:content-[''] after:absolute after:top-[2px] after:left-[2px]

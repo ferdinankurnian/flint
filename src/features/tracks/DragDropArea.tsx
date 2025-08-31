@@ -31,7 +31,7 @@ const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
 
   return (
     <div
-      className="absolute w-full h-full top-0 left-0 z-100 border-2 border-dashed border-gray-400 rounded-lg"
+      className="absolute w-full h-full top-0 left-0 z-100 border-2 border-dashed border-neutral-400 rounded-lg"
       onDragEnter={handleDragEnter}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
@@ -43,7 +43,7 @@ const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
           <p className="mt-2 text-lg">Drop Here</p>
         </div>
       )}
-      {/* <div className="flex items-center justify-center h-full text-gray-500">
+      {/* <div className="flex items-center justify-center h-full text-neutral-500">
         Drag & Drop your music files here
       </div> */}
     </div>

@@ -22,8 +22,8 @@ const SidebarButton: React.FC<SidebarButtonProps> = ({
     <button
       className={`w-full flex flex-row items-center gap-2 text-left mb-2 py-2 px-4 rounded-md transition-colors ${
         isActive
-          ? "bg-gray-700 text-white"
-          : "bg-transparent text-gray-300 hover:bg-gray-800"
+          ? "bg-neutral-700 text-white"
+          : "bg-transparent text-neutral-300 hover:bg-neutral-800"
       }`}
       onClick={onClick}
     >
@@ -83,7 +83,7 @@ const SettingsModalContent: React.FC = () => {
       </div>
 
       {/* Separator Line */}
-      <div className="w-[1px] bg-gray-700"></div>
+      <div className="w-[1px] bg-neutral-700"></div>
 
       {/* Content Area */}
       <div className="w-full sm:w-2/3 md:w-3/4 p-5 py-2 h-full overflow-y-auto">

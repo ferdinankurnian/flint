@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow, ipcMain, globalShortcut } from "electron";
 import path from "path";
 import { fileURLToPath } from "url";
 import Database from "better-sqlite3";
@@ -19,12 +19,15 @@ function createWindow() {
     },
   });
 
+  win.setMenu(null);
+
   // win.webContents.on("did-finish-load", () => {
   //   win.webContents.setZoomFactor(0.9); // Set zoom ke 90%
   // });
 
   // if (process.env.NODE_ENV === "development") {
-    win.loadURL("http://localhost:5173"); // Vite dev server
+    win.loadURL("http://localhost:5174"); // Vite dev server
+    win.webContents.openDevTools(); // Open DevTools automatically in development
   // } else {
     // win.loadFile(path.join(__dirname, "../dist/index.html")); // Production build
   // }
@@ -33,6 +36,16 @@ function createWindow() {
 app.whenReady().then(() => {
   lyricsCache();
   createWindow();
+
+  // Register a shortcut to open DevTools
+  globalShortcut.register('F12', () => {
+    BrowserWindow.getFocusedWindow()?.webContents.openDevTools();
+  });
+
+  // Register a shortcut to refresh the window
+  globalShortcut.register('F5', () => {
+    BrowserWindow.getFocusedWindow()?.webContents.reloadIgnoringCache();
+  });
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {

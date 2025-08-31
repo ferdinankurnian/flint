@@ -222,3 +222,14 @@ input[type="range"]:focus {
         @apply bg-background text-foreground;
     }
 }
+
+@keyframes marquee-pause {
+    0%   { transform: translateX(100%); }
+    40%  { transform: translateX(-100%); } /* geser keluar */
+    70%  { transform: translateX(-100%); } /* berhenti di ujung */
+    100% { transform: translateX(100%); }  /* balik ke awal */
+}
+
+.animate-marquee-pause {
+    animation: marquee-pause 8s linear infinite;
+}

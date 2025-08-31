@@ -15,6 +15,7 @@ import { useLyrics } from "../../context/LyricsContext";
 import { useEffect, useState, useRef } from "react";
 import { useViewSection } from "../../context/ViewSectionContext";
 import { VolumeSlider } from "../../components/VolumeSlider";
+import { SmartMarquee } from "../../components/SmartMarquee";
 
 function Player() {
   const {
@@ -26,7 +27,7 @@ function Player() {
     setCurrentTime,
   } = usePlayer();
   const { tracks, currentTrack, currentIndex, setCurrentTrack } = useTrack();
-  const { setActiveLyricIndex } = useLyrics();
+  const { setActiveLyricIndex, lyrics, activeLyricIndex } = useLyrics();
   const { toggleTracklist, toggleLyrics, isLyricsVisible, isTracklistVisible } =
     useViewSection();
   const [volume, setVolume] = useState(70);
@@ -104,7 +105,6 @@ function Player() {
         album: currentTrack.album,
         artwork: currentTrack.artworkUrl
           ? [
-              // Provide multiple sizes for better compatibility
               {
                 src: currentTrack.artworkUrl,
                 sizes: "512x512",
@@ -139,6 +139,7 @@ function Player() {
     }
 
     const handleKeydown = (event: KeyboardEvent) => {
+      console.log("GLOBAL KEYDOWN EVENT:", event.code, event.key); // Add this line
       if (event.code === "Space") {
         event.preventDefault();
         handlePlayPause();
@@ -148,14 +149,27 @@ function Player() {
       } else if (event.code === "ArrowRight") {
         event.preventDefault();
         handleFastForward();
+      } else if (event.code === "ArrowUp") {
+        event.preventDefault();
+        if (lyrics.length > 0 && activeLyricIndex > 0) {
+          const newIndex = activeLyricIndex - 1;
+          setActiveLyricIndex(newIndex);
+          if (lyrics[newIndex].time !== undefined && audioRef.current) {
+            audioRef.current.currentTime = lyrics[newIndex].time;
+            setCurrentTime(lyrics[newIndex].time);
+          }
+        }
+      } else if (event.code === "ArrowDown") {
+        event.preventDefault();
+        if (lyrics.length > 0 && activeLyricIndex < lyrics.length - 1) {
+          const newIndex = activeLyricIndex + 1;
+          setActiveLyricIndex(newIndex);
+          if (lyrics[newIndex].time !== undefined && audioRef.current) {
+            audioRef.current.currentTime = lyrics[newIndex].time;
+            setCurrentTime(lyrics[newIndex].time);
+          }
+        }
       }
-      // else if (event.code === "Comma") {
-      //     event.preventDefault();
-      //     handlePrevTrack();
-      // } else if (event.code === "Period") {
-      //     event.preventDefault();
-      //     handleNextTrack();
-      // }
     };
 
     window.addEventListener("keydown", handleKeydown);
@@ -163,6 +177,8 @@ function Player() {
       window.removeEventListener("keydown", handleKeydown);
     };
   }, [currentTrack, isPlaying]);
+
+  
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -202,9 +218,9 @@ function Player() {
                     setCurrentTime(time);
                   }
                 }}
-                className="w-full h-1 bg-gray-500 rounded-full appearance-none cursor-pointer"
+                className="w-full h-1 bg-white/20 rounded-full appearance-none cursor-pointer"
                 style={{
-                  background: `linear-gradient(to right, white ${(currentTime / duration) * 100}%, #6b7280 ${(currentTime / duration) * 100}%)`,
+                  background: `linear-gradient(to right, white ${(currentTime / duration) * 100}%, #ffffff25 ${(currentTime / duration) * 100}%)`,
                 }}
               />
             </div>
@@ -217,13 +233,13 @@ function Player() {
               </span>
             </div>
           </div>
-          <div className="flex flex-col items-center gap-1">
-            <h2 className="np-title text-white text-lg font-bold truncate max-w-72">
+          <div className="flex flex-col items-center gap-1 mt-1 max-w-72">
+            <SmartMarquee className="np-title text-white text-lg font-bold text-center">
               {currentTrack?.title || "No Track"}
-            </h2>
-            <p className="np-artists text-gray-300 text-xs font-normal truncate max-w-72">
+            </SmartMarquee>
+            <SmartMarquee className="np-artists text-neutral-300 text-xs font-normal text-center">
               {currentTrack?.artist || "Unknown"}
-            </p>
+            </SmartMarquee>
           </div>
           <div className="flex space-x-4 mt-4">
             <button

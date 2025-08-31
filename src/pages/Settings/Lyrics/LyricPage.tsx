@@ -12,7 +12,7 @@ const LyricPage = () => {
               See all stored lyrics in the database storage.
             </p>
           </div>
-          <button className="text-sm bg-gray-700 p-1 px-2 rounded">Open</button>
+          <button className="text-sm bg-neutral-700 p-1 px-2 rounded">Open</button>
         </div>
         <div className="flex justify-between items-center">
           <div className="flex flex-col">

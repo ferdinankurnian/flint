@@ -13,7 +13,7 @@ const Modal: React.FC = () => {
       <div className="bg-[#131313] rounded-lg shadow-lg w-full h-full md:w-4xl md:h-auto">
         <div className="p-4 h-full relative">
           <button
-            className="absolute right-4 hover:text-gray-200 cursor-pointer"
+            className="absolute right-4 hover:text-neutral-200 cursor-pointer"
             onClick={closeModal}
           >
             <X size={24} weight="bold" />

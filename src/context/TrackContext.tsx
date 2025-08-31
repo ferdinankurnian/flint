@@ -44,6 +44,32 @@ export function TrackProvider({ children }: { children: ReactNode }) {
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
   const [currentIndex, setCurrentIndex] = useState<number>(-1);
   const [isShuffling, setIsShuffling] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load tracks from localStorage on initial render
+  useEffect(() => {
+    try {
+      const savedTracks = localStorage.getItem("flint-tracks");
+      if (savedTracks) {
+        setTracks(JSON.parse(savedTracks));
+      }
+    } catch (error) {
+      console.error("Failed to load tracks from localStorage", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Save tracks to localStorage whenever they change
+  useEffect(() => {
+    if (!isLoading) {
+      try {
+        localStorage.setItem("flint-tracks", JSON.stringify(tracks));
+      } catch (error) {
+        console.error("Failed to save tracks to localStorage", error);
+      }
+    }
+  }, [tracks, isLoading]);
 
   // **Gunakan useMemo untuk generate song_id sekali aja**
   const trackWithId = useMemo(() => {

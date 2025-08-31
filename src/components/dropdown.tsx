@@ -27,8 +27,8 @@ const DropdownItem = ({
       className={`block w-full text-left px-4 py-2 text-xs whitespace-nowrap overflow-hidden text-ellipsis
         ${
           disabled
-            ? "opacity-50 text-gray-500"
-            : "hover:bg-[#00000057] hover:text-gray-100 text-gray-300"
+            ? "opacity-50 text-neutral-500"
+            : "hover:bg-[#00000057] hover:text-neutral-100 text-neutral-300"
         }`}
       onClick={handleClick}
       disabled={disabled}
@@ -39,7 +39,7 @@ const DropdownItem = ({
 };
 
 const DropdownSeparator = () => (
-  <div className="border-t border-gray-600 my-1"></div>
+  <div className="border-t border-neutral-600 my-1"></div>
 );
 
 // Create a context to share the setIsOpen function

@@ -27,7 +27,7 @@ function MusicItem() {
             <p className="text-white text-sm font-semibold truncate">
               {track.title}
             </p>
-            <p className="text-gray-300 text-xs truncate">{track.artist}</p>
+            <p className="text-neutral-300 text-xs truncate">{track.artist}</p>
           </div>
           {currentTrack?.url === track.url && (
             <VinylRecord

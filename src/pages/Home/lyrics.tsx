@@ -13,6 +13,7 @@ import ScrollToPlugin from "gsap/ScrollToPlugin";
 gsap.registerPlugin(ScrollToPlugin);
 import SongInfoModal from "../../features/tracks/songInfo";
 import SettingsModal from "../../components/settingsModal";
+import { SmartMarquee } from "../../components/SmartMarquee";
 
 const LyricLine = ({ text, isActive }: { text: string; isActive: boolean }) => {
   return (
@@ -213,7 +214,7 @@ const LyricsDisplay = ({
 };
 
 function Lyrics() {
-  const { lyrics, activeLyricIndex, setLyrics } = useLyrics();
+  const { lyrics, activeLyricIndex, setLyrics, setActiveLyricIndex } = useLyrics();
   const { currentTrack } = useTrack();
   const { isPlaying } = usePlayer();
   const { isLyricsVisible } = useViewSection();
@@ -247,6 +248,29 @@ function Lyrics() {
 
     loadLyricsForTrack();
   }, [currentTrack, setLyrics]);
+
+  // Keyboard navigation for lyrics
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!isLyricsVisible || lyrics.length === 0) return;
+
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setActiveLyricIndex((prevIndex) =>
+          Math.min(prevIndex + 1, lyrics.length - 1),
+        );
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setActiveLyricIndex((prevIndex) => Math.max(prevIndex - 1, 0));
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isLyricsVisible, lyrics, setActiveLyricIndex]);
 
   const handleLrcUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -346,12 +370,12 @@ function Lyrics() {
               src={currentTrack?.artworkUrl || "https://placehold.co/50x50"}
           />
           <div className="min-w-0 overflow-hidden">
-            <h2 className="text-white text-sm font-semibold truncate w-full">
+            <SmartMarquee className="text-white text-sm font-semibold truncate w-full">
               {currentTrack?.title || "No Track"}
-            </h2>
-            <p className="text-gray-300 text-xs truncate w-full">
+            </SmartMarquee>
+            <SmartMarquee className="text-neutral-300 text-xs truncate w-full">
               {currentTrack?.artist || "Unknown"}
-            </p>
+            </SmartMarquee>
           </div>
         </div>
 
@@ -381,7 +405,7 @@ function Lyrics() {
           </Dropdown>
         </div>
       </div>
-      <div className="text-white h-full overflow-y-auto">
+      <div className="text-white h-full overflow-y-auto mt-[-0.5rem] [mask-image:linear-gradient(to_bottom,transparent_0%,black_5%,black_50%,transparent_100%)]">
         {lyrics.length > 0 ? (
           <LyricsDisplay
             lyrics={lyrics}

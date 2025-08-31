@@ -73,7 +73,7 @@ export const VolumeSlider = ({ volume, onVolumeChange, isOpen, onClose, buttonRe
             setIsMuted(false);
           }
         }}
-        className="w-full h-1 bg-gray-500 rounded-full appearance-none cursor-pointer"
+        className="w-full h-1 bg-neutral-500 rounded-full appearance-none cursor-pointer"
         style={{
           background: `linear-gradient(to right, white ${volume}%, #6b7280 ${volume}%)`
         }}

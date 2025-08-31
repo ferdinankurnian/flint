@@ -28,7 +28,7 @@ function MainContent() {
           backgroundSize: "cover",
           backgroundPosition: "center center",
           backgroundRepeat: "no-repeat",
-          backgroundColor: currentTrack?.artworkUrl ? "transparent" : "#4b5563",
+          backgroundColor: currentTrack?.artworkUrl ? "transparent" : "#1F272D",
         }}>
         <div
           className="absolute inset-0 backdrop-blur-xl bg-black/30"
